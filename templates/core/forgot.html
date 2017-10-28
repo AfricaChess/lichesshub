@@ -1,0 +1,80 @@
+{% extends "core/alt_base.html" %}
+{% load staticfiles %}
+
+{% block breadcrumb %}
+<li class="active">Sign In</li>
+{% endblock breadcrumb %}
+
+{% block page-header %}
+  Password recovery
+{% endblock page-header %}
+
+{% block main-content %}
+<div class="login-box">
+  <div class="login-logo">
+  
+  <span class="logo-lg">Drug Xchange
+  </span>
+    
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Password reset</p>
+
+    <form action="" method="post">{% csrf_token %}
+    {% if form.non_field_errors %}
+    	{% for error in form.non_field_errors %}
+    		<div class="alert alert-danger">
+    			{{ error }}
+    		</div>
+    	{% endfor %}
+    {% endif %}
+      <div class="form-group has-feedback">
+      	{% if form.email.errors %}
+      		<div class="alert alert-danger">
+      			{{ form.email.errors }}
+      		</div>
+        <!-- <input type="password" class="form-control" placeholder="Password"> -->
+        {% endif %}
+        {{ form.email }}
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        <span class="text-muted"><small>We will send you a mail with instructions on how to reset your password</small></span>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-8">
+          <div class="checkbox icheck">
+            <label>
+              <!-- <input type="checkbox"> Remember Me -->
+            </label>
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="">
+        	<button type="submit" class="btn btn-block btn-danger btn-flat"><i class="fa fa-envelope"></i> Send me a recovery mail</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+
+    <!-- /.social-auth-links -->
+    <div class="row">
+    <p>I think I remember my password <a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Sign in</a></p>
+    <p>I don't have an account <a href="#">Register</a></p>
+    </div>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+{% endblock main-content %}
+
+
+{% block extra-js %}
+<script>
+  $('#id_email').attr('placeholder', 'Email');
+  $('#id_email').addClass('form-control');
+
+  </script>
+{% endblock extra-js %}

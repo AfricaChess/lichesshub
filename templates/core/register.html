@@ -1,0 +1,150 @@
+{% extends "core/alt_base.html" %}
+{% load staticfiles %}
+
+{% block breadcrumb %}
+<li class="active">Join us</li>
+{% endblock breadcrumb %}
+
+{% block page-header %}
+  Register
+{% endblock page-header %}
+
+{% block main-content %}
+<div class="login-box">
+  <div class="login-logo">
+  
+  <span class="logo-lg">Blood Bank
+  </span>
+    
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Join the Blood Bank network</p>
+
+    <form action="" method="post">{% csrf_token %}
+    {% if form.non_field_errors %}
+    	{% for error in form.non_field_errors %}
+    		<div class="alert alert-danger">
+    			{{ error }}
+    		</div>
+    	{% endfor %}
+    {% endif %}
+     
+
+      <div class="form-group has-feedback">
+        {% if form.email.errors %}
+            <div class="alert alert-danger">
+                {{ form.email.errors }}
+            </div>
+        {% endif %}
+        {{ form.email }}
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+
+      <div class="form-group has-feedback">
+          {% if form.pwd1.errors %}
+            <div class="alert alert-danger">
+                {{ form.pwd1.errors }}
+            </div>
+        {% endif %}
+        {{ form.pwd1 }}
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        
+      </div>
+
+        <div class="form-group has-feedback">
+          {% if form.pwd2.errors %}
+            <div class="alert alert-danger">
+                {{ form.pwd2.errors }}
+            </div>
+        {% endif %}
+        {{ form.pwd2 }}
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        
+      </div>
+
+       <hr />
+
+        <div class="form-group has-feedback">
+        {% if form.name.errors %}
+            <div class="alert alert-danger">
+                {{ form.name.errors }}
+            </div>
+        {% endif %}
+        {{ form.name }}
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+
+      <div class="form-group has-feedback">
+          {% if form.phone.errors %}
+            <div class="alert alert-danger">
+                {{ form.phone.errors }}
+            </div>
+        {% endif %}
+        {{ form.phone }}
+        <span class="glyphicon glyphicon-earphone form-control-feedback"></span>
+        
+      </div>
+
+       <div class="form-group has-feedback">
+        {% if form.address.errors %}
+            <div class="alert alert-danger">
+                {{ form.address.errors }}
+            </div>
+        {% endif %}
+        {{ form.address }}
+      </div>
+
+      <div class="row">
+        <div class="col-xs-8">
+          <div class="checkbox icheck">
+            <label>
+              <!-- <input type="checkbox"> Remember Me -->
+            </label>
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="">
+        	<button type="submit" class="btn btn-block btn-danger btn-flat"><i class="fa fa-sign-in"></i> Join us!</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+
+    <!-- /.social-auth-links -->
+    <div class="row">
+    <p>I already have an account <a href="{% url 'login' %}">Login</a></p>
+    </div>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+{% endblock main-content %}
+
+
+{% block extra-js %}
+<script>
+    $('#id_name').attr('placeholder', 'Your Name');
+    $('#id_name').addClass('form-control');
+
+    $('#id_email').attr('placeholder', 'Email (will be used to login)');
+    $('#id_email').addClass('form-control');
+
+    $('#id_pwd1').addClass('form-control');
+    $('#id_pwd1').attr('placeholder', 'Password');
+    
+    $('#id_pwd2').addClass('form-control');
+    $('#id_pwd2').attr('placeholder', 'Verify Password');
+
+    $('#id_phone').attr('placeholder', 'Mobile');
+    $('#id_phone').addClass('form-control');
+
+    $('#id_address').attr('placeholder', 'Address');
+    $('#id_address').attr('rows', '4');
+    $('#id_address').addClass('form-control');
+    
+    $('#id_state').addClass('form-control');
+  </script>
+{% endblock extra-js %}

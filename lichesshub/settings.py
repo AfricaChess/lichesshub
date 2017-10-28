@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'account.apps.AccountConfig',
+    'club.apps.ClubConfig',
+    'tournament.apps.TournamentConfig',
+    'grandprix.apps.GrandprixConfig',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +59,7 @@ ROOT_URLCONF = 'lichesshub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,3 +123,62 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'otherstatic'),
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+LOGIN_REDIRECT_URL = '/club/profile/'
+
+MEDIA_URL = '/static/media/'
+
+MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
+
+LICHESS_API_URL = 'https://lichess.org/api/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(message)s'
+        }
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'tournament': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'club': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'grandprix': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    }
+}
+
+try:
+    from local_settings import *
+except ImportError:
+    pass

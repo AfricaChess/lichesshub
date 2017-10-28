@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block pagetitle %}EDSG Action Tracker{% endblock pagetitle %}
+
+	{% block breadcrumb %}
+    <!-- START BREADCRUMB -->
+    <ul class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li class="active">Welcome</li>
+    </ul>
+    <!-- END BREADCRUMB -->
+	{% endblock breadcrumb %}
+	
+{% block links %}
+ <li>
+    <a href="{% url 'tracker_action_list' %}"><i class="fa fa-list-ol fa-fw"></i> Action Points</a>
+    <a href="{% url 'tracker_new_action' %}"><i class="fa fa-plus fa-fw"></i> New Action Point</a>
+</li>
+{% endblock links %}
+
+
+{% block pagecontent %}
+              
+       <!-- START WIDGETS -->                    
+       <div class="row">
+           <div class="col-md-3">
+               {% comment %}<div class="widget widget-default widget-item-icon">
+                   <div class="widget-item-left">
+                       <span class="fa fa-user"></span>
+                   </div>                             
+                   <div class="widget-data">
+                       <div class="widget-int num-count"></div>
+                       <div class="widget-title"> </div>
+                       <div class="widget-subtitle"></div>
+                   </div>      
+                   <div class="widget-controls">                                
+                       <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
+                   </div>
+               </div>                   {% endcomment %}
+               <!-- START WIDGET SLIDER -->
+               <div class="widget widget-default widget-carousel">
+                   
+                   <div class="owl-carousel" id="owl-example">
+                       <div>                                    
+                           <div class="widget-title">Last Login</div>                                                                        
+                           <div class="widget-subtitle">{{login|timesince}} ago</div>
+                           <div class="widget-int">{{login|date:"d M y"}}</div>
+                       </div>
+                       
+                       <div>                                    
+                           <div class="widget-title">Welcome</div>
+                           <div class="widget-subtitle"></div>
+                           <div class="widget-int">{{ user.username|upper }}</div>
+                       </div>
+                   </div>                            
+                   <div class="widget-controls">                                
+                       <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
+                   </div>                           
+                   
+                   
+               </div>        
+               <!-- END WIDGET SLIDER -->
+               
+           </div>
+           <div class="col-md-3">
+               
+               <!-- START WIDGET MESSAGES -->
+               <div class="widget widget-default widget-item-icon">
+                   <div class="widget-item-left">
+                       <span class="fa fa-comment"></span>
+                   </div>                             
+                   <div class="widget-data">
+                       <div class="widget-int num-count">{{ feedback|length }}</div>
+                       <div class="widget-title"> Feedback</div>
+                       <div class="widget-subtitle">pending feedback</div>
+                   </div>      
+                   <div class="widget-controls">                                
+                       <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
+                   </div>
+               </div>                            
+               <!-- END WIDGET MESSAGES -->
+               
+           </div>
+           <div class="col-md-3">
+               <!-- START WIDGET REGISTRED -->
+               <div class="widget widget-default widget-item-icon">
+                   <div class="widget-item-left">
+                       <span class="fa fa-tasks"></span>
+                   </div>
+                   <div class="widget-data">
+                       <div class="widget-int num-count">{{ pending|length }}</div>
+                       <div class="widget-title">Action Points</div>
+                       <div class="widget-subtitle">pending action points</div>
+                   </div>
+                   <div class="widget-controls">                                
+                       <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
+                   </div>                            
+               </div>                            
+               <!-- END WIDGET REGISTRED -->
+              
+           </div>
+           <div class="col-md-3">
+               
+               <!-- START WIDGET CLOCK -->
+               <div class="widget widget-danger widget-padding-sm">
+                   <div class="widget-big-int plugin-clock">00:00</div>                            
+                   <div class="widget-subtitle plugin-date">Loading...</div>
+                   <div class="widget-controls">                                
+                       <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="left" title="Remove Widget"><span class="fa fa-times"></span></a>
+                   </div>                            
+                   <div class="widget-buttons widget-c3">
+                       <div class="col">
+                           <a href="#"><span class="fa fa-clock-o"></span></a>
+                       </div>
+                       <div class="col">
+                           <a href="#"><span class="fa fa-bell"></span></a>
+                       </div>
+                       <div class="col">
+                           <a href="#"><span class="fa fa-calendar"></span></a>
+                       </div>
+                   </div>                            
+               </div>                        
+               <!-- END WIDGET CLOCK -->
+               
+           </div>
+       </div>
+       <!-- END WIDGETS -->  
+	   
+       <div class="row">
+         
+           <div class="col-md-8">
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box">
+                           <h3>Recent Documents</h3>
+                           <span>View the latest documents uploaded</span>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="table-responsive">
+                           <table class="table table-bordered table-hover">
+                               <thead>
+                                   <tr class="success">
+                                       <th>Document</th>
+                                       <th>MDA</th>
+                                       <th>Minuted to</th>
+                                       <th>Subject/Issue</th>
+                                       <th>My Comment</th>
+                                       <th>Status</th>
+                                       <th>Close</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   {% for action in recent %}
+                                   <tr>
+                                       <td data-toggle="tooltip" data-placement="top" title="Click to view timeline of issue"><a href="{% url 'tracker_timeline' id=action.id %}">{% if action.thumbnail %}<img src="{{ action.thumbnail.url }}"/>{% endif %}</a></td>
+                                       <td>{{ action.mda }}</td>
+                                       <td>{{action.minuted_to|default:"N/A"}}</td>
+                                       <td>{{ action.subject }}</td>
+                                       <td>{{action.description}}</td>
+                                       {% comment %}<td>{{ action.due_date|date:"d M Y" }}</td>{% endcomment %}
+                                       <td>
+                                           {% if action.status == 'Overdue' %}
+                                           <span class="label label-danger">{{action.status}}</span>
+                                           {% endif %}
+                                           {% if action.status == 'Due' %}
+                                           <span class="label label-warning">{{action.status}}</span>
+                                           {% endif %}
+                                           {% if action.status == 'Pending' %}
+                                           <span class="label label-success">{{action.status}}</span>
+                                           {% endif %}
+                                        </td>
+                                       <td><a href="#" id="trigger{{action.id}}" data-item="{% url 'tracker_close' id=action.id %}" class="btn btn-danger modal_trigger"><span class="fa fa-cancel"></span> Close Issue</a></td>
+                                   </tr>
+                                   {% endfor %}
+                               </tbody>
+                           </table>
+                       </div>
+                   </div>
+               </div>
+           </div>
+             <div class="col-md-4">
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box"><h3>Recent Activity</h3>
+                       <span>New Issues and their treatment</span>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="panel panel-default tabs">
+                           <ul class="nav nav-tabs" role="tablist">
+                            <li class="active"><a href="#tab-first" role="tab" data-toggle="tab">Today</a></li>
+                            <li><a href="#tab-second" role="tab" data-toggle="tab">This week</a></li>
+                            <li><a href="#tab-third" role="tab" data-toggle="tab">This month</a></li>
+                        </ul>       
+                        <div class="panel-body tab-content">
+                            <div class="tab-pane active" id="tab-first">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <td>New Issues</td>
+                                            <td>{{today_new}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Feedback</td>
+                                            <td>{{today_feedback}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Closed Issues</td>
+                                            <td>{{today_closed}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab-second">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <td>New Issues</td>
+                                            <td>{{week_new}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Feedback</td>
+                                            <td>{{week_feedback}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Closed Issues</td>
+                                            <td>{{week_closed}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab-third">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <td>New Issues</td>
+                                            <td>{{month_new}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Feedback</td>
+                                            <td>{{month_feedback}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Closed Issues</td>
+                                            <td>{{month_closed}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                       </div>
+                   </div>
+                   
+               </div>
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box"><h3>Status</h3>
+                        <span>Proportion of action points in different states of urgency</span>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="row stacked">
+                           <div class="col-md-8">
+                               {% for key, val in priorities %}
+                                 <div class="progress-list">
+                                     <div class="pull-left">
+                                         <strong>{{key}}</strong>
+                                     </div>
+                                     <div class="pull-right">{{val|floatformat}}%</div>
+                                     <div class="progress progress-small progress-striped active">
+                                         <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{val}}%;">{{val|floatformat}}%</div>
+                                     </div>
+                                 </div>
+                               {% endfor %}
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+	   </div>
+ <!-- PAGE CONTENT WRAPPER -->   
+{% endblock pagecontent %}                             
+            
+      
+   
+	
+	{% block extra-footer-js %}
+	
+    <!-- START THIS PAGE PLUGINS-->        
+    <script type="text/javascript" src="{% static 'js/plugins/icheck/icheck.min.js' %}"></script>        
+    <script type="text/javascript" src="{% static 'js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/scrolltotop/scrolltopcontrol.js' %}"></script>
+    
+    <script type="text/javascript" src="{% static 'js/plugins/morris/raphael-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/morris/morris.min.js' %}"></script>       
+    <script type="text/javascript" src="{% static 'js/plugins/rickshaw/d3.v3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/rickshaw/rickshaw.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>                
+    <script type="text/javascript" src="{% static 'js/plugins/bootstrap/bootstrap-datepicker.js' %}"></script>                
+    <script type="text/javascript" src="{% static 'js/plugins/owl/owl.carousel.min.js' %}"></script>                 
+    
+    <script type="text/javascript" src="{% static 'js/plugins/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/daterangepicker/daterangepicker.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/dash_chart.js' %}"></script>
+    <!-- END THIS PAGE PLUGINS-->
+
+    <script type="text/javascript">
+      $('.modal_trigger').click(function(e){
+          e.preventDefault();
+          //var id = $(this).attr('id').substr(7);
+          var url = $(this).attr('data-item');
+          //console.log('modal ' + $(this).attr('id').substr(7));
+          $('#close_action').attr('href', url);
+          $('#modal_basic').modal();
+      });
+    </script>
+	   
+	{% endblock extra-footer-js %}
+
+
+
+
+
+
+

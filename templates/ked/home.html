@@ -1,0 +1,174 @@
+{% extends 'ked/base.html' %}
+{% load static from staticfiles %}
+
+{% block pagetitle %}KEDC{% endblock pagetitle %}
+
+{% block extra-css %}
+<style>
+.content-wrapper, .main-footer {
+  margin-left: 0;
+}
+</style>
+{% endblock extra-css %}
+
+{% block left-sidebar %}{% endblock %}
+
+{% block main-content %}
+              
+       <div class="row" id="app">
+         
+           <div class="col-md-10">
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box">
+                           <h3>Welcome {{user.username}}</h3>
+                           <span>
+                               {% if login %}
+                               <small class="text-info">You last logged in {{login|timesince}} ago</small>
+                               {% else %}
+                               <small class="text-info">First timer, are you?</small>
+                               {% endif %}
+                            </span>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="panel panel-default tabs">
+                           <ul class="nav nav-tabs" role="tablist">
+                               <li class="active"><a href="#tab-first" role="tab" data-toggle="tab"><i class="fa fa-eye"></i> View Pins</a></li>
+                               <li><a href="#tab-second" role="tab" data-toggle="tab"><i class="fa fa-plus"></i> Generate Pins</a></li>
+                           </ul>
+                           <div class="panel-body tab-content">
+                               <div class="tab-pane active" id="tab-first">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr class="success">
+                                                    <th>PIN</th>
+                                                    <th>Value</th>
+                                                    <th>Serial</th>
+                                                    <th>Valid?</th>
+                                                    <th>Meter</th>
+                                                    <th>Phone</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="item in pins">
+                                                    <td><strong><span v-text="item.pin"></span></strong></td>
+                                                    <td><span v-text="item.value"></span></td>
+                                                    <td>[item.serial]</td>
+                                                    <td>
+                                                        <span v-if="item.used"><i class="fa fa-times-circle text-red"></i></span>
+                                                        <span v-if="!item.used"><i class="fa fa-check-circle text-green"></i></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-text="item.meter"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-text="item.phone"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                               </div>
+                               <div class="tab-pane" id="tab-second">
+                                   <div class="row">
+                                       <div class="col-md-12">
+                                           <div class="panel panel-default">
+                                               <form @submit.prevent="generatePins()">
+                                                   <div class="panel-body">
+                                                       <div class="row">
+                                                            <div class="col-md-6">
+                                                                <small class="text-muted">Enter the value of pins to be generated</small>
+                                                                <div class="input-group">
+                                                                    <input type="number" v-model="pin_value" class="form-control"/>
+                                                                    <span class="input-group-btn">
+                                                                        <button type="button" @click="generatePins()" class="btn btn-info" placeholder="Value"><i class="fa fa-plus"></i> Generate Pins</button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                       </div>
+                                                   </div>
+                                               </form>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                              
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+
+</div>
+ <!-- PAGE CONTENT WRAPPER -->
+
+ 
+{% endblock main-content %}                             
+            
+      
+   
+	
+	{% block extra-js %}
+    <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
+    <script src="https://unpkg.com/vue-resource@1.3.1/dist/vue-resource.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/vee-validate/2.0.0-rc.3/vee-validate.min.js"></script>
+    <script>
+        
+       
+        Vue.http.options.emulateJSON = true;
+        Vue.use(VeeValidate);
+
+        var vm = new Vue({
+            el: "#app",
+            delimiters: ["[","]"],
+            data: {
+                pins: [],
+                pin_value: 1000,
+                loading: false
+            },
+            mounted: function() {
+                console.log('vue initialized');
+                this.getPins();
+            },
+            methods: {
+                getPins() {
+                    let url = '/ked/list/';
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        this.pins = response.body.pins;
+                    });
+                },
+                generatePins() {
+                    let url = '/ked/generate/?value=' + this.pin_value;
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        alertify.success("Pins generated successfully");
+                        this.pins = response.body.pins;
+                        this.pin_value = 1000;
+                    });
+                }
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+      $('.modal_trigger').click(function(e){
+          e.preventDefault();
+          //var id = $(this).attr('id').substr(7);
+          var url = $(this).attr('data-item');
+          //console.log('modal ' + $(this).attr('id').substr(7));
+          $('#close_action').attr('href', url);
+          $('#modal_basic').modal();
+      });
+    </script>
+	   
+	{% endblock extra-js %}
+
+
+
+
+
+
+

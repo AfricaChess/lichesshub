@@ -1,0 +1,290 @@
+{% extends "mcq/base.html" %}
+
+{% load static from staticfiles %}
+
+{% block pageheader %}
+    <h1 class="page-header">New Question</h1>
+{% endblock pageheader %}
+
+{% block panelheader %}
+New Question
+{% endblock panelheader %}
+
+{% block breadcrumb %}
+    <!-- START BREADCRUMB -->
+    <ul class="breadcrumb">
+        <li><a href="{% url 'mcq_subjects' %}">Home</a></li>
+        <li class="active">New Question</li>
+    </ul>
+    <!-- END BREADCRUMB -->
+{% endblock breadcrumb %}
+
+{% block pagecontent %}
+<div class="row">
+    <div class="col-md-12">
+        <form id="action_form" action="" method="post" role="form" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
+        <div class="panel panel-default">
+            
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="panel-heading"><h3>New Question ({{exam.question_count}} added)</h3></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+    
+                        {% comment %}<div class="form-group">
+                            {% if form.tracking_number.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.tracking_number.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.tracking_number.id_for_label }} class="col-md-3 control-label">Tracking Number</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-pencil"></span>
+                                    </span>
+                                    {{ form.tracking_number }}
+                                </div>
+                                <span class="help-block">Enter Tracking Number</span>
+                            </div>
+                        </div>{% endcomment %}
+                        <div class="form-group">
+                            {% if form.main_text.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.main_text.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.main_text.id_for_label }} class="col-md-3 control-label">Main Text</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-file-text"></span>
+                                    </span>
+                                    {{ form.main_text }}
+                                </div>
+                                <span class="help-block">Enter Main Text of Question</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.sub_text.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.sub_text.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.sub_text.id_for_label }} class="col-md-3 control-label">Sub Text</label>
+                             <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-file-text"></span>
+                                    </span>
+                                    {{ form.sub_text }}
+                                </div>
+                                <span class="help-block">Enter Sub-Text of Question</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.pic.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.pic.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.pic.id_for_label }} class="col-md-3 control-label">Picture</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-upload"></span>
+                                    </span>
+                                    {{ form.pic }}
+                                </div>
+                                <span class="help-block">Enter Subject</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {% if form.answer_A.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.answer_A.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.answer_A.id_for_label }} class="col-md-3 control-label">A</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    {{ form.answer_A }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.answer_B.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.answer_B.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.answer_B.id_for_label }} class="col-md-3 control-label">B</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    {{ form.answer_B }}
+                                </div>
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            {% if form.answer_C.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.answer_C.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.answer_C.id_for_label }} class="col-md-3 control-label">C</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    {{ form.answer_C }}
+                                </div>
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            {% if form.answer_D.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.answer_D.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.answer_D.id_for_label }} class="col-md-3 control-label">D</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    {{ form.answer_D }}
+                                </div>
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            {% if form.answer_E.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.answer_E.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.answer_E.id_for_label }} class="col-md-3 control-label">E</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    {{ form.answer_E }}
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+     
+            <div class="panel-footer">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                <input type="submit" value="Save" class="btn btn-success btn-block" />
+                    
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+    
+        </div>
+    </form>        
+    </div>
+</div>
+{% endblock pagecontent %}
+
+{% block extra-footer-js %}
+<script type="text/javascript" src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+
+<script type="text/javascript">
+    $('#id_main_text').addClass('form-control');
+    $('#id_sub_text').addClass('form-control');
+    $('#id_pic').addClass('form-control');
+    $('#id_answer_A').addClass('form-control');
+    $('#id_answer_B').addClass('form-control');
+    $('#id_answer_C').addClass('form-control');
+    $('#id_answer_D').addClass('form-control');
+    $('#id_answer_E').addClass('form-control');
+    $('#id_minuted_to').addClass('form-control');
+    $('#id_document').addClass('form-control');
+    $('#id_document_name').addClass('form-control');
+   
+    $('#id_due_date').addClass('form-control');
+    $('#id_due_date').datepicker({
+        autoclose: true
+    });
+    $('#id_description').addClass('form-control');
+
+    var jvalidate = $("#action_form").validate({
+        rules: {
+            mda: {
+                required: true,
+                minlength: 2,
+            },
+            document_name: {
+                required: true
+            },
+            document: {
+                required: true
+            },
+            subject: {
+                required: true
+            },
+            minuted_to: {
+                required: true
+            },
+            priority: {
+                required: true
+            },
+            due_date: {
+                required: true,
+                date: true
+            }
+        }
+    })
+</script>
+ <script type="text/javascript">
+            var jvalidate = $("#jvalidate").validate({
+                ignore: [],
+                rules: {                                            
+                        login: {
+                                required: true,
+                                minlength: 2,
+                                maxlength: 8
+                        },
+                        password: {
+                                required: true,
+                                minlength: 5,
+                                maxlength: 10
+                        },
+                        're-password': {
+                                required: true,
+                                minlength: 5,
+                                maxlength: 10,
+                                equalTo: "#password2"
+                        },
+                        age: {
+                                required: true,
+                                min: 18,
+                                max: 100
+                        },
+                        email: {
+                                required: true,
+                                email: true
+                        },
+                        date: {
+                                required: true,
+                                date: true
+                        },
+                        credit: {
+                                required: true,
+                                creditcard: true
+                        },
+                        site: {
+                                required: true,
+                                url: true
+                        }
+                    }                                        
+                });                                    
+
+        </script>
+{% endblock extra-footer-js %}

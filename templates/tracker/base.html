@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block top-header %}Action Tracker{% endblock top-header %}
+
+{% block links %}
+ <li>
+    <a href="{% url 'tracker_action_list' %}"><i class="fa fa-list-ol fa-fw"></i> Action Points</a>
+    <a href="{% url 'tracker_new_action' %}"><i class="fa fa-plus fa-fw"></i> New Action Point</a>
+</li>
+{% endblock links %}

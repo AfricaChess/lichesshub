@@ -1,0 +1,337 @@
+{% extends "drugs/base.html" %}
+
+{% block title %} Profile {% endblock title %}
+
+{% block page-header %} Dashboard {% endblock page-header %}
+
+{% block breadcrumb %}
+<li class="active">Dashboard</li>
+{% endblock breadcrumb %}
+
+{% block extra-js %}
+<script>
+    $('li.active').removeClass('active');
+    $('#profile-nav-menu').addClass('active');
+
+    var dateOpts = {
+        dateFormat: "yy-mm-dd",
+        defaultDate: new Date(),
+        currentText: "Now"
+    }
+    $('#id_start_date').datepicker(dateOpts);
+    $('#id_end_date').datepicker(dateOpts);
+    $('#id_start_date').addClass('form-control');
+    $('#id_end_date').addClass('form-control');
+    $('#id_location').addClass('form-control');
+</script>
+{% endblock extra-js %}
+
+{% block main-content %}
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    {% include 'panel.html' %}
+    <!-- /.row -->
+    <!-- Main row -->
+    <div class="row">
+        <!-- Left col -->
+        <section class="col-lg-12 connectedSortable">
+            <!-- Custom tabs (Charts with tabs)-->
+            <div class="box box-info">
+                <div class="box-header">
+                     <form method="GET" action=""> 
+                         <div class="form-group has-feedback col-lg-3">
+                             {% if form.start_date.errors %}
+                             <div class="alert alert-danger">
+                                 {{ form.start_date.errors }}
+                             </div>
+                             {% endif %}
+                             {{ form.start_date }}
+                             <span class=" form-control-feedback"></span>
+                         </div>
+                          <div class="col-lg-3">
+                             {% if form.end_date.errors %}
+                             <div class="alert alert-danger">
+                                 {{ form.end_date.errors }}
+                             </div>
+                             {% endif %}
+                             {{ form.end_date }}
+                             <span class=" form-control-feedback"></span>
+                         </div>
+                          <div class="col-lg-3">
+                              {% if form.location.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.location.errors }}
+                                </div>
+                                {% endif %}
+                                {{ form.location }}
+                             <span class=" form-control-feedback"></span>
+                         </div>
+                          <div class="col-lg-3">
+				            <input type="submit" class="btn btn-primary" value="Filter">
+				            <a href="{% url 'home' %}" class="btn btn-primary">Reset</a>
+                         </div>
+
+
+                        
+                        <input type="hidden" id="filterParameters" name="q" value="" />   
+		            </form>
+                </div>
+            </div>
+		    
+            <div class="nav-tabs-custom">
+                <!-- Tabs within a box -->
+                <ul class="nav nav-tabs">
+                    <li class="header active"><a data-toggle="tab" href="#neworders"> New Orders <span class="badge bg-info">{{ new_orders|length }}</span></a></li>
+                    <li class="header"><a data-toggle="tab" href="#unassigned">Unassigned <span class="badge bg-black">{{ unassigned|length }}</span></a></li>
+                    <li class="header"><a data-toggle="tab" href="#assigned">Assigned <span class="badge bg-purple">{{ assigned|length }}</span></a></li>
+                    <li class="header"><a data-toggle="tab" href="#ongoing">On-Going <span class="badge bg-aqua">{{ ongoing|length }}</span></a></li>
+                    <li class="header"><a data-toggle="tab" href="#completed"> Completed <span class="badge bg-green">{{ completed|length }}</span></a></li>
+                    <li class="header"><a data-toggle="tab" href="#failed">Failed <span class="badge bg-red">{{ failed|length }}</span></a></li>
+                </ul>
+                <div class="tab-content no-padding">
+                    <div id="neworders" class="tab-pane fade in active">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Age</th>
+                                    <th>Order</th>
+                                    <th>Full name</th>
+                                    <th>Phone</th>
+                                    <th>Total Cost</th>
+                                    <th>payment method</th>
+                                    <th>State</th>
+                                    <th>Edit Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in new_orders %}
+                                <tr>
+                                    <td>{% if order.is_late %}<span class="badge bg-red">late!</span>{% endif %} {{ order.order_created|timesince }}</td>
+                                    <td>{{ order.order_id }}</td>
+                                    <td>{{ order.first_name }} {{ order.last_name }}</td>
+                                    <td>{{ order.phone }}</td>
+                                    <td>{{ order.total_cost }}</td>
+                                    <td>{{ order.payment_method }}</td>
+                                    <td>{{ order.state }}</td>
+                                    <td><a href="{% url 'location' id=order.id%}" class="btn btn-primary"><span class="fa fa-location-arrow"></span> Edit Location</a></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="9">No data to show</td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div id="unassigned" class="tab-pane fade">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Full name</th>
+                                    <th>Phone</th>
+                                    <th>Total Cost</th>
+                                    <th>payment method</th>
+                                    <th>Outlet</th>
+                                    <th>Edit Location</th>
+                                    <th>Assign to Dispatch</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in unassigned %}
+                                <tr>
+                                    <td>{{ order.order_id }}</td>
+                                    <td>{{ order.first_name }} {{ order.last_name }}</td>
+                                    <td>{{ order.phone }}</td>
+                                    <td>{{ order.total_cost }}</td>
+                                    <td>{{ order.payment_method }}</td>
+                                    <td>{{ order.location.name }}{% if not order.location %}<span class="badge bg-red">Select Location!</span>{% endif %}</td>
+                                    <td><a href="{% url 'location' id=order.id%}" class="btn btn-primary"><span class="fa fa-location-arrow"></span> Edit Location</a></td>
+                                    <td><a href="{% url 'assign_driver' id=order.id%}" class="btn btn-primary"><span class="fa fa-truck"></span> Assign Driver</a></td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div id="assigned" class="tab-pane fade">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Full name</th>
+                                    <th>Phone</th>
+                                    <th>Total Cost</th>
+                                    <th>payment method</th>
+                                    <th>Outlet</th>
+                                    <th>Edit Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in assigned %}
+                                <tr>
+                                    <td>{{ order.order_id }}</td>
+                                    <td>{{ order.first_name }} {{ order.last_name }}</td>
+                                    <td>{{ order.phone }}</td>
+                                    <td>{{ order.total_cost }}</td>
+                                    <td>{{ order.payment_method }}</td>
+                                    <td>{{ order.location.name }}{% if not order.location %}<span class="badge bg-red">Select Location!</span>{% endif %}</td>
+                                    <td><a href="{% url 'location' id=order.id%}" class="btn btn-primary">Edit Location</a></td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div id="ongoing" class="tab-pane fade">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Full name</th>
+                                    <th>Phone</th>
+                                    <th>Total Cost</th>
+                                    <th>payment method</th>
+                                    <th>Outlet</th>
+                                    <th>Driver Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dispatch in ongoing_dispatch %}
+                                <tr>
+                                    <td>{{ dispatch.order.order_id }}</td>
+                                    <td>{{ dispatch.order.first_name }} {{ dispatch.order.last_name }}</td>
+                                    <td>{{ dispatch.order.phone }}</td>
+                                    <td>{{ dispatch.order.total_cost }}</td>
+                                    <td>{{ dispatch.order.payment_method }}</td>
+                                    <td>{{ dispatch.order.location.name }}</td>
+                                    <td>
+                                        <a href="{% url 'dispatch_movement' id=dispatch.id %}" class="btn btn-primary">
+                                            <span class="fa fa-compass"></span>
+                                            Track Driver
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div id="completed" class="tab-pane fade">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Full name</th>
+                                    <th>Phone</th>
+                                    <th>Total Cost</th>
+                                    <th>payment method</th>
+                                    <th>Outlet</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in completed %}
+                                <tr>
+                                    <td>{{ order.order_id }}</td>
+                                    <td>{{ order.first_name }} {{ order.last_name }}</td>
+                                    <td>{{ order.phone }}</td>
+                                    <td>{{ order.total_cost }}</td>
+                                    <td>{{ order.payment_method }}</td>
+                                    <td>{{ order.location.name }}{% if not order.location %}<span class="badge bg-red">Select Location!</span>{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div id="failed" class="tab-pane fade">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Order</th>
+                                    <th>Full name</th>
+                                    <th>Phone</th>
+                                    <th>Total Cost</th>
+                                    <th>payment method</th>
+                                    <th>Address</th>
+                                    <th>Edit Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in failed %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ order.order_id }}</td>
+                                    <td>{{ order.first_name }} {{ order.last_name }}</td>
+                                    <td>{{ order.phone }}</td>
+                                    <td>{{ order.total_cost }}</td>
+                                    <td>{{ order.payment_method }}</td>
+                                    <td>{{ order.address }}</td>
+                                    <td><a href="{% url  'location' id=order.id%}" class="btn btn-primary">Edit Location</a></td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+              </div>
+
+          <div class="nav-tabs-custom">
+            <!-- Tabs within a box -->
+            <ul class="nav nav-tabs pull-right">
+              <li class="active"><a href="#revenue-chart" data-toggle="tab"></a></li>
+              <li><a href="#sales-chart" data-toggle="tab"></a></li>
+              <li class="pull-left header"><i class="fa fa-inbox"></i> Driver List</li>
+            </ul>
+            <div class="tab-content no-padding">
+            <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>S/N</th>
+              <th>Full name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Latitude</th>
+              <th>Logitude</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for driver in drivers %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ driver.name }}</td>
+              <td>{{ driver.email }}</td>
+              <td>{{ driver.phone }}</td>
+              {% if driver.offline %}
+              <td>Offline</td>
+              {% else %}
+              <td>Online</td>
+              {% endif %}
+              <td>{{ driver.latitude }}</td>
+              <td>{{ driver.longitude }}</td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+        </section>
+        <!-- /.Left col -->
+
+    </div>
+    <!-- /.row (main row) -->
+</section>
+{% endblock main-content %}

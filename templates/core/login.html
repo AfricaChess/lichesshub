@@ -1,0 +1,64 @@
+{% extends "core/base.html" %}
+{% load static from staticfiles %}
+
+{% block extra-js %}
+        <script type="text/javascript">
+        $(function(){
+                $('#id_username').attr('placeholder', 'E-mail');
+                $('#id_username').attr('class', 'form-control');
+                $('#id_password').attr('placeholder', 'Password');
+                $('#id_password').attr('class', 'form-control');
+        });
+        </script>
+{% endblock extra-js %}
+
+                    {% block innerbody %}
+                    {% if form.non_field_errors %}
+                    <div class="form-group has-error">
+                        <label class="control-label">{{ form.non_field_errors }}</label>
+                    </div>
+                    {% endif %}
+                    <div class="login-title"><strong>Log In</strong> to your account</div>
+                    <form action="" class="form-horizontal" method="post">{% csrf_token %}
+                    <div class="form-group{% if form.username.errors %} has-error{% endif %}">
+                        <div class="col-md-12">
+                            {% if form.username.errors %}
+                              <label class="control-label">{{ form.username.errors }}</label>
+                            {% endif %}
+                            {{ form.username }}
+                        </div>
+                    </div>
+                    <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+                        <div class="col-md-12">
+                            {% if form.password.errors %}
+                              <label class="control-label">{{ form.password.errors }}</label>
+                            {% endif %}
+                            {{ form.password }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <a href="{% url 'registration' %}" class="btn btn-link btn-block">Register</a>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-block btn-primary">Log In</button>
+                        </div>
+                    </div>
+                    </form>
+                    <div class="login-or">OR</div>
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <a href="{% url 'twtlogin' %}"><button class="btn btn-info btn-block btn-twitter"><span class="fa fa-twitter"></span>Twitter</button></a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'fblogin' %}"><button class="btn btn-info btn-block btn-facebook"><span class="fa fa-facebook"></span> Facebook</button></a>
+                        </div>
+                        <div class="col-md-4">                            
+                            <a href="{% url 'gplogin' %}"><button class="btn btn-info btn-block btn-google"><span class="fa fa-google-plus"></span> Google</button></a>
+                        </div>
+                    </div>
+                    <div class="login-subtitle">
+                        Don't have an account yet? <a href="#">Create an account</a>
+                    </div>
+                    
+                    {% endblock innerbody %}

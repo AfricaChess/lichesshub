@@ -1,0 +1,82 @@
+{% extends "core/alt_base.html" %}
+{% load static from staticfiles %}
+
+{% block page-header %}
+    Change Password
+{% endblock page-header %}
+
+{% block title %}
+    Change Password
+{% endblock title %}
+
+{% block main-content %}
+<div class="login-box">
+  <div class="login-logo">
+  
+  <span class="logo-lg">Drug Xchange
+  </span>
+    
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Password reset</p>
+
+<form action="" method="post">{% csrf_token %}
+    {% if form.non_field_errors %}
+      {% for error in form.non_field_errors %}
+          <div class="alert alert-danger">
+            {{ error }}
+          </div>
+      {% endfor %}
+    {% endif %}
+    <div class="form-group has-feedback">
+      {% if form.pwd1.errors %}
+        <div class="alert alert-danger">
+          {{ form.pwd1.errors }}
+        </div>
+      {% endif %}
+      {{ form.pwd1 }}
+      <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+    </div>
+    
+    <div class="form-group has-feedback">
+      {% if form.pwd2.errors %}
+        <div class="alert alert-danger">
+          {{ form.pwd2.errors }}
+        </div>
+      {% endif %}
+      {{ form.pwd2 }}
+       <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+    </div>
+      
+      <div class="row">
+          <button type="submit" class="btn btn-danger btn-block btn-flat"><i class="fa fa-key"></i> Change Password</button>
+      </div>
+    </form>
+
+    <!-- /.social-auth-links -->
+    <div class="row">
+    <p>I think I remember my password <a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Sign in</a></p>
+    <p>I don't have an account <a href="#">Register</a></p>
+    </div>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+{% endblock main-content %}
+
+{% block extra-js %}
+<script>
+  $('#id_pwd1').attr('placeholder', 'New Password');
+  $('#id_pwd1').addClass('form-control');
+
+  $('#id_pwd2').attr('placeholder', 'Confirm Password');
+  $('#id_pwd2').addClass('form-control');
+  </script>
+{% endblock extra-js %}
+
+
+
+

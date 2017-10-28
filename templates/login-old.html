@@ -1,0 +1,62 @@
+{% extends "drugs/login_base.html" %}
+{% load static from staticfiles %}
+
+{% block pageheader %}
+    <h1 class="page-header">Login</h1>
+{% endblock pageheader %}
+
+{% block panelheader %}
+Login
+{% endblock panelheader %}
+
+{% block top-header %}Drug Xchange{% endblock top-header %}
+
+{% block left-nav %}
+{% endblock left-nav %}
+
+{% block breadcrumb %}
+    <!-- START BREADCRUMB -->
+    <ul class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li class="active">Login</li>
+    </ul>
+    <!-- END BREADCRUMB -->
+{% endblock breadcrumb %}
+
+{% block pagecontent %}
+<div class="page-content-wrap">
+<div class="row">
+<div class="col-lg-4">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {% if form.errors %}
+            <p class="alert alert-danger">Your username and password didn't match. Please try again.</p>
+            {% endif %}
+
+            {% if next %}
+            <p>Please Login to see this page.</p>
+            {% endif %}
+            <form action="{% url 'login' %}" method="post" role="form">{% csrf_token %}
+                    <div class="form-group">
+                        <label for={{ form.username.id_for_label }} class="control-label">Email</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="form-group">
+                        <label for={{ form.password.id_for_label }} class="control-label">Password</label>
+                        {{ form.password }}
+                    </div>
+                    <input type="submit" value="Login" class="btn btn-success btn-block" />
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+{% endblock pagecontent %}
+
+{% block extra-js %}
+<script type="text/javascript">
+    $('#id_username').addClass('form-control')
+    $('#id_password').addClass('form-control')
+</script>
+{% endblock extra-js %}

@@ -1,0 +1,28 @@
+{% extends "core/alt_base.html" %}
+{% load staticfiles %}
+
+
+{% block page-header %}
+Email Sent
+{% endblock page-header %}
+
+{% block main-content %}
+<div class="login-box">
+  <div class="login-logo">
+  
+  <span class="logo-lg">Drug Xchange
+  </span>
+    
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+      <div class="fa fa-3x fa-envelope text-green" style="margin: auto; width: 100%; text-align:center;"></div>
+      <h4 style="text-align:center;">We have sent an email to you with with instructions on how to change your password.</h4>
+      <p style="text-align:center;" class="text-red">Make sure to check your spam folder if you can't find the mail.</p>
+    <!-- /.social-auth-links -->
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+{% endblock main-content %}

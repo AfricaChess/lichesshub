@@ -1,0 +1,27 @@
+{% extends "core/alt_base.html" %}
+{% load staticfiles %}
+
+
+{% block page-header %}
+Email Sent
+{% endblock page-header %}
+
+{% block main-content %}
+<div class="login-box">
+  <div class="login-logo">
+  
+  <span class="logo-lg">Drug Xchange
+  </span>
+    
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+      <div class="fa fa-3x fa-close text-red" style="margin: auto; width: 100%; text-align:center;"></div>
+      <h4 style="text-align:center;">There was an issue sending the email, please  <a href="mailto:bayokrapht@gmail.com">contact the admin.</a></h4>
+    <!-- /.social-auth-links -->
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+{% endblock main-content %}

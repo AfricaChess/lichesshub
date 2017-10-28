@@ -1,0 +1,173 @@
+{% extends 'survey/base.html' %}
+{% load static from staticfiles %}
+
+{% block pagetitle %}SMS Survey{% endblock pagetitle %}
+
+{% block extra-css %}
+<style>
+.content-wrapper, .main-footer {
+  margin-left: 0;
+}
+</style>
+{% endblock extra-css %}
+
+{% block left-sidebar %}{% endblock %}
+
+{% block main-content %}
+              
+       <div class="row" id="app">
+         
+           <div class="col-md-12">
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box">
+                           <h3>Welcome {{user.username}}</h3>
+                           <span>
+                               {% if login %}
+                               <small class="text-info">You last logged in {{login|timesince}} ago</small>
+                               {% else %}
+                               <small class="text-info">First timer, are you?</small>
+                               {% endif %}
+                            </span>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="panel panel-default tabs">
+                           <ul class="nav nav-tabs" role="tablist">
+                               <li class="active"><a href="#tab-first" role="tab" data-toggle="tab"><i class="fa fa-eye"></i> Surveys</a></li>
+                               <li><a href="#tab-second" role="tab" data-toggle="tab"><i class="fa fa-play"></i> Start Survey</a></li>
+                           </ul>
+                           <div class="panel-body tab-content">
+                               <div class="tab-pane active" id="tab-first">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr class="success">
+                                                    <td v-for="qtn in questions"><span v-text="qtn"></span></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="line in surveys">
+                                                    <td v-for="item in line"><span v-text="item"></span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                               </div>
+                               <div class="tab-pane" id="tab-second">
+                                   <div class="row">
+                                       <div class="col-md-12">
+                                           <div class="panel panel-default">
+                                               <form @submit.prevent="startSurvey()">
+                                                   <div class="panel-body">
+                                                       <div class="row">
+                                                            <div class="col-md-6">
+                                                                <small class="text-muted">Enter the phone number in international format</small>
+                                                                <div class="input-group">
+                                                                    <input type="number" v-model="phone" class="form-control"/>
+                                                                    <span class="input-group-btn">
+                                                                        <button type="button" @click="startSurvey()" class="btn btn-info" placeholder="Value"><i class="fa fa-play"></i> Start Survey</button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                       </div>
+                                                   </div>
+                                               </form>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                              
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+
+</div>
+ <!-- PAGE CONTENT WRAPPER -->
+
+ 
+{% endblock main-content %}                             
+            
+      
+   
+	
+	{% block extra-js %}
+    <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
+    <script src="https://unpkg.com/vue-resource@1.3.1/dist/vue-resource.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/vee-validate/2.0.0-rc.3/vee-validate.min.js"></script>
+    <script>
+        
+       
+        Vue.http.options.emulateJSON = true;
+        Vue.use(VeeValidate);
+
+        var vm = new Vue({
+            el: "#app",
+            delimiters: ["[","]"],
+            data: {
+                pins: [],
+                pin_value: 1000,
+                loading: false,
+                phone: null,
+                questions: [],
+                surveys: []
+            },
+            mounted: function() {
+                console.log('vue initialized');
+                this.getSurveys();
+            },
+            methods: {
+                getSurveys() {
+                    let url = '/survey/list/';
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        this.questions = response.body.questions;
+                        this.surveys = response.body.surveys;
+                    });
+                },
+                startSurvey() {
+                    if (!this.phone) {
+                        alertify.error('Please enter a phone number');
+                        return;
+                    }
+                    let url = '/survey/start/?phone=' + this.phone;
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        alertify.success('Survey Started!');
+                        this.phone = '';
+                    });
+                },
+                generatePins() {
+                    let url = '/ked/generate/?value=' + this.pin_value;
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        alertify.success("Pins generated successfully");
+                        this.pins = response.body.pins;
+                        this.pin_value = this.pin_value;
+                    });
+                }
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+      $('.modal_trigger').click(function(e){
+          e.preventDefault();
+          //var id = $(this).attr('id').substr(7);
+          var url = $(this).attr('data-item');
+          //console.log('modal ' + $(this).attr('id').substr(7));
+          $('#close_action').attr('href', url);
+          $('#modal_basic').modal();
+      });
+    </script>
+	   
+	{% endblock extra-js %}
+
+
+
+
+
+
+

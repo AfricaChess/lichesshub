@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+
+{% block top-header %}MCQ{% endblock top-header %}
+
+{% block logo1 %}
+
+{% endblock logo1 %}
+
+{% block links %}
+ <li>
+    <a href="{% url 'tracker_action_list' %}"><i class="fa fa-list-ol fa-fw"></i> Subjects</a>
+</li>
+{% endblock links %}

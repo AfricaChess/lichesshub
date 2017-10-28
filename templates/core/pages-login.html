@@ -1,0 +1,64 @@
+{% extends "drugs/base.html" %}
+{% load static from staticfiles %}
+{% block extra-js %}
+        <script type="text/javascript">
+        $(function(){
+                $('#id_username').attr('placeholder', 'Email');
+                $('#id_username').attr('class', 'form-control');
+                $('#id_password').attr('placeholder', 'Password');
+                $('#id_password').attr('class', 'form-control');
+               
+        });
+        </script>
+{% endblock extra-js %}
+
+{% block extra-css %}
+<style>
+.content-wrapper, .main-footer {
+  margin-left: 0;
+}
+</style>
+{% endblock extra-css %}
+
+{% block left-sidebar %}{% endblock %}
+
+ {% block main-content %}
+ <div class="col-md-4"></div>
+ <div class="col-md-4">
+                    {% if form.non_field_errors %}
+                    <div class="form-group has-error">
+                        <label class="control-label">{{ form.non_field_errors }}</label>
+                    </div>
+                    {% endif %}
+                    <div class="login-title"><strong>Login to Drug Xchange</strong></div>
+                    <form action="" class="form-horizontal" method="post">{% csrf_token %}
+                    <div class="form-group{% if form.username.errors %} has-error{% endif %}">
+                         <div class="col-md-12">
+                            {% if form.username.errors %}
+                              <label class="control-label">User name</label>
+                            {% endif %}
+                            {{ form.username }}
+                        </div>
+                    </div>
+                    <div class="form-group{% if form.email.errors %} has-error{% endif %}">
+                        <div class="col-md-12">
+                            {% if form.password.errors %}
+                              <label class="control-label">{{ form.password.errors }}</label>
+                            {% endif %}
+                            {{ form.password }} 
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            {% comment %}<a href="{% url 'registration' %}" class="btn btn-link btn-block">No account? Register</a>{% endcomment %}
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-block btn-primary">Log In</button>
+                        </div>
+                    </div>
+                    </form>
+ </div>
+ <div class="col-md-4"></div>
+                    
+                    {% endblock main-content %}

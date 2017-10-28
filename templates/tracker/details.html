@@ -1,0 +1,127 @@
+{% extends "tracker/base.html" %}
+{% load static from staticfiles %}
+
+{% block pageheader %}
+<h1 class="page-header">Details for {{action.tracking_number|default:"Not Available"}}</h1>
+{% endblock pageheader %}
+
+{% block panelheader %}
+Contractor Entry/Exit
+{% endblock panelheader %}
+
+{% block breadcrumb %}
+    <!-- START BREADCRUMB -->
+    <ul class="breadcrumb">
+        <li><a href="{% url 'tracker_action_list' %}">Home</a></li>
+        <li class="active">Action Details</li>
+    </ul>
+    <!-- END BREADCRUMB -->
+{% endblock breadcrumb %}
+
+{% block pagecontent %}
+<div class="row">
+    <div class="col-lg-6">
+      <div class="table-responsive">
+          <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+               <tbody>
+               <tr>
+                   <td>Tracking #</td>
+                   <td>{{ action.tracking_number|default:"Not Available" }}</td>
+               </tr>
+               <tr>
+                   <td>Subject</td>
+                   <td>{{ action.subject }}</td>
+               </tr>
+               <tr>
+                   <td>Description</td>
+                   <td>{{ action.description }}</td>
+               </tr>
+               <tr>
+                   <td>MDA/Company</td>
+                   <td>{{ action.owner }}</td>
+               </tr>
+               <tr>
+                   <td>Priority</td>
+                   <td>{{ action.priority }}</td>
+               </tr>
+               <tr>
+                   <td>Minuted To</td>
+                   <td>{{ action.minuted_to }}</td>
+               </tr>
+               <tr>
+                   <td>Date</td>
+                   <td>{{ action.date|date:"d b Y" }}</td>
+               </tr>
+               <tr>
+                   <td>Due Date</td>
+                   <td>{{ action.due_date|date:"d b Y" }}</td>
+               </tr>
+               <tr>
+                   <td>Status</td>
+                   <td>{{ action.status }}</td>
+               </tr>
+                <tr>
+                   <td>Feedback</td>
+                   <td>{{ action.feedback }}</td>
+               </tr>
+               <tr>
+                   <td>Governor's Feedback</td>
+                   <td>{{ action.govs_reaction }}</td>
+               </tr>
+               </tbody>
+           </table>
+       </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <caption>Feedback</caption>
+                <thead>
+                    <tr>
+                        <td>Message</td>
+                        <td>When</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in feedback %}
+                      <tr>
+                          <td>{{ item.text }}</td>
+                          <td>{{ item.when|date:"d b Y" }}</td>
+                      </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+<form action="" method="post" role="form">{% csrf_token %}
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+    <fieldset>
+        <div class="form-group">
+                {% if form.text.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.text.errors }}
+                    </div>
+                {% endif %}
+            <label for={{ form.text.id_for_label }} class="control-label">Feedback</label>
+            {{ form.text }}
+        </div>
+        
+        <input type="submit" value="Enter Feedback" class="btn btn-primary" />
+    </fieldset>
+</form>
+    </div>
+</div>
+
+{% endblock pagecontent %}
+
+{% block extra-footer-js %}
+<script type="text/javascript">
+    $('#id_text').addClass('form-control')
+    $('#id_num_workers').addClass('form-control')
+</script>
+{% endblock extra-footer-js %}

@@ -1,0 +1,164 @@
+{% extends "tracker/base.html" %}
+{% load static from staticfiles %}
+
+{% block breadcrumb %}
+    <!-- START BREADCRUMB -->
+    <ul class="breadcrumb">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="active">Timeline for {{action.subject}}</li>
+    </ul>
+    <!-- END BREADCRUMB -->
+{% endblock breadcrumb %}
+
+{% block pagecontent %}
+  
+        <div class="row">
+            <div class="col-md-6">
+                
+                <!-- START TIMELINE FILTER -->                            
+                <div class="panel panel-success">                                
+                    <div class="panel-body">
+                        <h3>{{action.subject}} ({{action.tracking_number}})</h3>
+                        <div>
+                            <a href="{{action.document.url}}">
+                                <img src="{{action.thumbnail.url}}" class="img-text" width="150" align="left"/>
+                            </a>
+                        </div>                
+                        <br />                 
+                       <h6>{{action.document_name}}</h6>
+                       <p><a href="{{action.document.url}}"><strong>download document</strong></a></p>
+                       <p>MDA/Company: <strong>{{action.mda}}</strong></p>
+                       <p>Minuted To: <strong>{{action.minuted_to}}</strong></p>
+                       <p>Due Date: <strong>{{action.due_date|date:"d M Y"}} ({{action.status}})</strong></p>
+                       <p>Priority: <strong>{{action.priority}}</strong></p>
+                    </div>
+                    <div class="panel-footer">
+                        <a href="#" data-item="{% url 'tracker_close' id=action.id %}" class="btn btn-danger" id="close_btn"><span class="fa fa-exit"></span> Close Issue</a>
+                    </div>
+                </div>
+                <!-- END TIMELINE FILTER -->
+                
+            </div>
+            <div class="col-md-6">
+                
+                <!-- START NEW RECORD -->
+                <div class="panel panel-success">
+                    <div class="panel-body">
+                        <h3>Make Comment</h3>
+                        <form method="post" action="" class="form-horizontal" role="form">{% csrf_token %}
+                        <div class="form-group">
+                            {% if form.text.errors %}
+                            <div class="alert alert-danger">
+                                {{ form.text.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="fa fa-pencil"></span></span>
+                                    {{ form.text }}
+                                </div>                                                                                        
+                            </div>                                        
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                               
+                                <div class="pull-right">
+                                    <button class="btn btn-success"><span class="fa fa-share"></span> POST</button>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- END NEW RECORD -->
+                
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                
+                <!-- START TIMELINE -->
+                <div class="timeline">
+                    
+                    <!-- START TIMELINE ITEM -->
+                    <div class="timeline-item timeline-main">
+                        <div class="timeline-date">{%now "M Y"%}</div>
+
+                    </div>
+                    <!-- END TIMELINE ITEM -->
+
+                    {% for feedback in feedback_list %}
+                      <div class="timeline-item{% if feedback.self_feedback %} timeline-item-right{% endif %}">
+                          <div class="timeline-item-info">{{feedback.when|date:"d M Y"}}</div>
+                          <div class="timeline-item-icon"><span class="fa fa-plus"></span></div>
+                          <div class="timeline-item-content">
+                              <div class="timeline-heading">
+                                  {% if feedback.self_feedback %}My Comment{% else %}Feedback posted{% endif %}
+                              </div>
+                              <div class="timeline-body comments">
+                                  <div class="comment-item">
+                                      <h6>{{feedback.text}}</h6>
+                                  </div>
+                              </div>
+
+                          </div>
+                      </div>
+                    {% endfor %}
+                    
+                    <!-- START TIMELINE ITEM -->
+                    <div class="timeline-item">
+                        <div class="timeline-item-info">{{action.date|date:"d M Y"}}</div>
+                        <div class="timeline-item-icon"><span class="fa fa-plus"></span></div>
+                        <div class="timeline-item-content">
+                            <div class="timeline-heading">
+                                <h6>Document Uploaded</h6>
+                                 <a href="#">Issue/Subject:</a> {{action.subject}}
+                            </div>
+                            <div class="timeline-body">
+                                <h6>My Comment</h6>
+                                <p>{{action.description}}</p>
+                                {% comment %}
+                                <ul class="list-tags">                                            
+                                    <li><a href="#"><span class="fa fa-tag"></span> tempor</a></li>
+                                    <li><a href="#"><span class="fa fa-tag"></span> eros</a></li>
+                                    <li><a href="#"><span class="fa fa-tag"></span> suspendisse</a></li>
+                                    <li><a href="#"><span class="fa fa-tag"></span> dolor</a></li>
+                                </ul>                
+                                {% endcomment %}                            
+                            </div>
+                          
+                        </div>
+                    </div>       
+                    <!-- END TIMELINE ITEM -->
+
+                    <!-- START TIMELINE ITEM -->
+                    <div class="timeline-item timeline-main">
+                        <div class="timeline-date">{{action.date|date:"M Y"}}</div>
+                    </div>
+                    <!-- END TIMELINE ITEM -->
+                    
+                    <!-- START TIMELINE ITEM -->
+                    <div class="timeline-item timeline-main">
+                        <div class="timeline-date"><a href="#"><span class="fa fa-ellipsis-h"></span></a></div>
+                    </div>                                
+                    <!-- END TIMELINE ITEM -->
+                </div>
+                <!-- END TIMELINE -->
+                
+            </div>
+        </div>                 
+
+{% endblock pagecontent %}
+
+{% block extra-footer-js %}
+<script type="text/javascript">
+  $('#id_text').addClass('form-control');
+  $('#close_btn').click(function(e){
+      e.preventDefault();
+      var url = $(this).attr('data-item');
+      $('#close_action').attr('href', url);
+      $('#modal_basic').modal();
+  })
+</script>
+{% endblock extra-footer-js %}

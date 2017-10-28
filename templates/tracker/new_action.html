@@ -1,0 +1,303 @@
+{% extends "tracker/base.html" %}
+
+{% load static from staticfiles %}
+
+{% block pageheader %}
+    <h1 class="page-header">New Action Point</h1>
+{% endblock pageheader %}
+
+{% block panelheader %}
+New Action Point
+{% endblock panelheader %}
+
+{% block breadcrumb %}
+    <!-- START BREADCRUMB -->
+    <ul class="breadcrumb">
+        <li><a href="{% url 'tracker_action_list' %}">Home</a></li>
+        <li class="active">New Action Point</li>
+    </ul>
+    <!-- END BREADCRUMB -->
+{% endblock breadcrumb %}
+
+{% block pagecontent %}
+<div class="row">
+    <div class="col-md-12">
+        <form id="action_form" action="" method="post" role="form" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
+        <div class="panel panel-default">
+            
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="panel-heading"><h3>New Action Point</h3></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+    
+                        {% comment %}<div class="form-group">
+                            {% if form.tracking_number.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.tracking_number.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.tracking_number.id_for_label }} class="col-md-3 control-label">Tracking Number</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-pencil"></span>
+                                    </span>
+                                    {{ form.tracking_number }}
+                                </div>
+                                <span class="help-block">Enter Tracking Number</span>
+                            </div>
+                        </div>{% endcomment %}
+                        <div class="form-group">
+                            {% if form.document_name.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.document_name.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.document_name.id_for_label }} class="col-md-3 control-label">Document Name</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-file-text"></span>
+                                    </span>
+                                    {{ form.document_name }}
+                                </div>
+                                <span class="help-block">Enter Name of Document</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.document.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.document.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.document.id_for_label }} class="col-md-3 control-label">Document</label>
+                             <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-upload"></span>
+                                    </span>
+                                    {{ form.document }}
+                                </div>
+                                <span class="help-block">Upload Document</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.subject.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.subject.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.subject.id_for_label }} class="col-md-3 control-label">Subject/Issue</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-asterisk"></span>
+                                    </span>
+                                    {{ form.subject }}
+                                </div>
+                                <span class="help-block">Enter Subject</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.description.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.description.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.description.id_for_label }} class="col-md-3 control-label">Governor's Comment</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                    </span>
+                                    {{ form.description }}
+                                </div>
+                                <span class="help-block">Enter the governor's comment on the Issue</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {% if form.mda.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.mda.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.mda.id_for_label }} class="col-md-3 control-label">MDA/Company</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-building"></span>
+                                    </span>
+                                    {{ form.mda }}
+                                </div>
+                                <span class="help-block">Enter The MDA or Company responsible</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.minuted_to.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.minuted_to.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.minuted_to.id_for_label }} class="col-md-3 control-label">Minuted To</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-user"></span>
+                                    </span>
+                                    {{ form.minuted_to }}
+                                </div>
+                                <span class="help-block">Who was it minuted to?</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.priority.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.priority.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.priority.id_for_label }} class="col-md-3 control-label">Priority</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-bolt"></span>
+                                    </span>
+                                    {{ form.priority }}
+                                </div>
+                                <span class="help-block">What is the priority of the issue?</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% if form.due_date.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.due_date.errors }}
+                                </div>
+                            {% endif %}
+                            <label for={{ form.due_date.id_for_label }} class="col-md-3 control-label">Due Date</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                    {{ form.due_date }}
+                                </div>
+                                <span class="help-block">When is it due?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+     
+            <div class="panel-footer">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                <input type="submit" value="Save Action Point" class="btn btn-success btn-block" />
+                    
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+    
+        </div>
+    </form>        
+    </div>
+</div>
+{% endblock pagecontent %}
+
+{% block extra-footer-js %}
+<script type="text/javascript" src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+
+<script type="text/javascript">
+    $('#id_mda').addClass('form-control');
+    $('#id_subject').addClass('form-control');
+    $('#id_priority').addClass('form-control');
+    $('#id_minuted_to').addClass('form-control');
+    $('#id_document').addClass('form-control');
+    $('#id_document_name').addClass('form-control');
+   
+    $('#id_due_date').addClass('form-control');
+    $('#id_due_date').datepicker({
+        autoclose: true
+    });
+    $('#id_description').addClass('form-control');
+
+    var jvalidate = $("#action_form").validate({
+        rules: {
+            mda: {
+                required: true,
+                minlength: 2,
+            },
+            document_name: {
+                required: true
+            },
+            document: {
+                required: true
+            },
+            subject: {
+                required: true
+            },
+            minuted_to: {
+                required: true
+            },
+            priority: {
+                required: true
+            },
+            due_date: {
+                required: true,
+                date: true
+            }
+        }
+    })
+</script>
+ <script type="text/javascript">
+            var jvalidate = $("#jvalidate").validate({
+                ignore: [],
+                rules: {                                            
+                        login: {
+                                required: true,
+                                minlength: 2,
+                                maxlength: 8
+                        },
+                        password: {
+                                required: true,
+                                minlength: 5,
+                                maxlength: 10
+                        },
+                        're-password': {
+                                required: true,
+                                minlength: 5,
+                                maxlength: 10,
+                                equalTo: "#password2"
+                        },
+                        age: {
+                                required: true,
+                                min: 18,
+                                max: 100
+                        },
+                        email: {
+                                required: true,
+                                email: true
+                        },
+                        date: {
+                                required: true,
+                                date: true
+                        },
+                        credit: {
+                                required: true,
+                                creditcard: true
+                        },
+                        site: {
+                                required: true,
+                                url: true
+                        }
+                    }                                        
+                });                                    
+
+        </script>
+{% endblock extra-footer-js %}

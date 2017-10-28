@@ -1,0 +1,149 @@
+{% load static from staticfiles %}
+<html>
+    <head>
+        <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.jqplot.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jqplot.json2.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jqplot.highlighter.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.jqplot.css' %}" />
+        <script type="text/javascript">
+        $(function(){
+            var url = "{% url 'transaction_data' %}";
+            url = url + '?size=60'
+            var price_data = [[]];
+            var macd_data = [[]];
+            $.ajax({
+                url: url,
+                async: false,
+                dataType: "json",
+                success: function(data){
+                    price_data[0] = data['prices'];
+                    macd_data[0] = data['macds'];
+                    macd_data[1] = data['signals'];
+                    macd_data[2] = [];
+                    for (var i=0;i<data['macds'].length;i++){
+                        macd_data[2].push(0);
+                    }
+                }
+            });
+
+            var priceRenderer = function(){
+//                var ret = null;
+                $.ajax({
+                    url: url,
+                    async: false,
+                    dataType: "json",
+                    success: function(data){
+//                        console.log("in price renderer");
+//                        price_data = [data["prices"]];
+                        macd_data[0] = data['macds'];
+                        macd_data[1] = data['signals'];
+                        macd_data[2] = [];
+                        for (var i=0;i<data['macds'].length;i++){
+//                            macd_data[2].push(0);
+                            price_data[0][i] = data['prices'][i];
+                            macd_data[0][i] = data['macds'][i];
+                            macd_data[1][i] = data['signals'][i];
+                            macd_data[2][i] = 0;
+                        }
+                    }
+                });
+                return price_data;
+            }
+            
+            var macdRenderer = function(){
+//                console.log('in macd renderer');
+                return macd_data;
+            }
+            
+            var pricePlot = $.jqplot('pricegraph', price_data, {
+                title: 'Price Chart',
+                dataRenderer: priceRenderer,
+                 highlighter:{
+                                show: true,
+                                sizeAdjust: 7.5
+                            },
+                series: [
+                    {
+                        lineWidth: 1,
+                        showMarker: false,
+                        pointLabels: {show:true},
+                    }
+                ]
+            });
+            
+            var macdPlot = $.jqplot('macdgraph', macd_data, {
+                title: 'Indicator Chart',
+                dataRenderer: macdRenderer,
+                series: [
+                    {
+                        lineWidth: 1,
+                        showMarker: false,
+                    },
+                    {
+                        lineWidth: 1,
+                        showMarker: false,
+                    },
+                    {
+                        lineWidth: 1,
+                        showMarker: false,
+                    },
+                ]
+            });
+            
+            var intervalId = setInterval(function(){
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    success: function(data){
+                        pricePlot.destroy();
+                        pricePlot = $.jqplot('pricegraph', price_data, {
+                            title: 'Price Chart',
+                            dataRenderer: priceRenderer,
+                            highlighter:{
+                                show: true,
+                                sizeAdjust: 7.5
+                            },
+                            series: [
+                                {
+                                    lineWidth: 1,
+                                    showMarker: false,
+                                    pointLabels: {show:true},
+                                }
+                            ]
+                        });
+                        
+                        macdPlot.destroy();
+                        macdPlot = $.jqplot('macdgraph', macd_data, {
+                            title: 'Indicator Chart',
+                            dataRenderer: macdRenderer,
+                            series: [
+                                {
+                                    lineWidth: 1,
+                                    showMarker: false,
+                                },
+                                {
+                                    lineWidth: 1,
+                                    showMarker: false,
+                                },
+                                {
+                                    lineWidth: 1,
+                                    showMarker: false,
+                                },
+                            ]
+                        });
+                        
+                    }
+                });
+            }, 300000);
+        });
+        </script>
+    </head>
+    <body>
+        <div id="pricegraph" class="graph" style="width:400px; height: 150px;">
+        </div>
+
+        <div id="macdgraph" class="graph" style="width:400px; height: 100px;">
+        </div>
+    </body>
+</html>

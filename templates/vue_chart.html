@@ -1,0 +1,122 @@
+{% load static from staticfiles %}
+<html>
+    <head>
+
+        <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
+        <script src="https://unpkg.com/vue-resource@1.3.1/dist/vue-resource.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+
+
+    </head>
+    <body>
+        <div id="app">
+            <label>Interval</label>
+            <select id="interval" @change="reload">
+                <option value="5" selected>5 mins</option>
+                <option value="10">10 mins</option>
+                <option value="15">15 mins</option>
+                <option value="30">30 mins</option>
+            </select>
+        </div>
+            <canvas id="usdChart" width="80vw" height="20vh"></canvas>
+            <canvas id="ngnChart" width="80vw" height="20vh"></canvas>
+            <canvas id="rateChart" width="80vw" height="20vh"></canvas>
+<script>
+
+</script>
+
+                <script type="text/javascript">
+                var ngnChart;
+                var usdChart;
+                var rateChart;
+                
+            var vm = new Vue({
+                el: "#app",
+                delimiters: ["[","]"],
+                data: {
+                    usddata: [],
+                    ngndata: [],
+                    ratesdata: [],
+                    labels: []
+                },
+                methods: {
+                    reload: function(event){
+                        let mins = event.target.value;
+                        this.$http.get('/transaction/exchange/?interval=' + mins).then((response) => {
+                            console.log(response.body);
+                            usdChart.data.labels = response.body.labels;
+                            usdChart.data.datasets[0].data = response.body.usd;
+                            usdChart.update();
+
+                            ngnChart.data.labels = response.body.labels;
+                            ngnChart.data.datasets[0].data = response.body.ngn;
+                            ngnChart.update();
+
+                            rateChart.data.labels = response.body.labels;
+                            rateChart.data.datasets[0].data = response.body.rate;
+                            rateChart.update();
+                        });
+                    }  
+                },
+                created: function() {
+                    console.log('vue initialized');
+                    this.$http.get('/transaction/exchange/').then((response) => {
+                        console.log(response.body.usd);
+                        this.usddata = response.body.usd;
+                        this.ngndata = response.body.ngn;
+                        this.ratesdata = response.body.rate;
+                        this.labels = response.body.labels;
+                        console.log("this.labels");
+                        console.log(this.labels);
+
+                        var ngnCtx = document.getElementById('ngnChart').getContext('2d');
+                        ngnChart = new Chart(ngnCtx, {
+                            type: 'line',
+                            data: {
+                                labels: this.labels,
+                                datasets: [{
+                                    label: 'NGN/BTC',
+                                    data: this.ngndata,
+                                    borderColor: ['rgba(255, 206, 86, 1)']
+                                }]
+                            },
+                            options: {}
+                        });
+
+                        var rateCtx = document.getElementById('rateChart').getContext('2d');
+                        rateChart = new Chart(rateCtx, {
+                            type: 'line',
+                            data: {
+                                labels: this.labels,
+                                datasets: [{
+                                    label: 'NGN/USD',
+                                    data: this.ratesdata,
+                                    borderColor: ['rgba(153, 102, 255, 1)']
+                                }]
+                            },
+                            options: {}
+                        });
+
+                        var usdCtx = document.getElementById("usdChart").getContext('2d');
+                        usdChart = new Chart(usdCtx, {
+                            type: 'line',
+                            data: {
+                                labels: this.labels,
+                                datasets: [{
+                                    label: 'USD/BTC',
+                                    data: this.usddata,
+                                    //data: [12, 19, 3, 5, 2, 3, 9, 10],
+                                    borderColor: [
+                                        'rgba(255,99,132,1)',
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {}
+                        });
+                    })
+                }
+            })
+        </script>
+    </body>
+</html>
