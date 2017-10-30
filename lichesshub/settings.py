@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '$3+$70f7z6kyjb^=u26flklf^&%fso+)lrc27)i-_rzjf@@tt@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['africachess.everyday.com.ng']
 
 
 # Application definition
