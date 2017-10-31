@@ -9,7 +9,7 @@ local_settings.py
 fabfile.py
 
 # scripts
-scripts/
+# scripts/
 
 # media files
 media/
