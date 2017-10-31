@@ -4,7 +4,6 @@ from club import views
 
 
 urlpatterns = [
-    url(r'profile/$', views.profile, name='club_profile'),
     url(r'info/$', views.info, name='club_info'),
     url(r'add_member/$', views.add_member),
     url(r'remove_member/(?P<id>\d+)/$', views.remove_member),

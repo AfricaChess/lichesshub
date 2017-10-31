@@ -25,7 +25,7 @@ SECRET_KEY = '$3+$70f7z6kyjb^=u26flklf^&%fso+)lrc27)i-_rzjf@@tt@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['africachess.everyday.com.ng']
+ALLOWED_HOSTS = ['africachess.everyday.com.ng', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -130,7 +130,7 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-LOGIN_REDIRECT_URL = '/club/profile/'
+LOGIN_REDIRECT_URL = '/'
 
 MEDIA_URL = '/static/media/'
 

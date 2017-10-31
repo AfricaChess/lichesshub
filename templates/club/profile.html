@@ -1,7 +1,7 @@
 {% extends 'club/base.html' %}
 {% load static from staticfiles %}
 
-{% block pagetitle %}Blood Bank{% endblock pagetitle %}
+{% block page-header %}Africa LiChess Hub{% endblock page-header %}
 
 {% block extra-css %}
 <style>
@@ -225,7 +225,7 @@
                         <draggable class="list-group" element="ul" v-model="members" :options="{group:'description', animation: 0}" @end="ended()">
                             <li class="list-group-item" v-for="member in members"><i class="glyphicon glyphicon-pushpin"> </i> [member.handle] ([member.rating])</li>
                         </draggable>
-                        <div><button class="btn btn-success" @click="saveOrder()"><i class="glyphicon glyphicon-save"> </i> Save your board order</button></div>
+                        <div v-if="members.length > 0"><button class="btn btn-success" @click="saveOrder()"><i class="glyphicon glyphicon-save"> </i> Save your board order</button></div>
                    </div>
                </div>
              
