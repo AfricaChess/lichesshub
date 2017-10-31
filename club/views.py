@@ -22,12 +22,18 @@ def json_bad_request(error):
 
 @login_required
 def profile(request):
-    try:
-        clb = Club.objects.get(captain=request.user)
-    except Club.DoesNotExist:
-        return redirect('login')
-    else:
+    clubs = Club.objects.filter(captain=request.user)
+    if clubs:
+        clb = clubs[0]
         return render(request, 'club/profile.html', {'club': clb})
+    else:
+        return redirect('login')
+    #try:
+    #    clb = Club.objects.get(captain=request.user)
+    #except Club.DoesNotExist:
+    #    return redirect('login')
+    #else:
+    #    return render(request, 'club/profile.html', {'club': clb})
 
 
 def get_members(clb):
