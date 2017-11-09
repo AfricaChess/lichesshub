@@ -1,0 +1,293 @@
+{% extends 'club/base.html' %}
+{% load static from staticfiles %}
+
+{% block page-header %}Africa LiChess Hub{% endblock page-header %}
+
+{% block extra-css %}
+<style>
+.content-wrapper, .main-footer {
+  margin-left: 0;
+}
+
+.flip-list-move {
+  transition: transform 0.5s;
+}
+.no-move {
+  transition: transform 0s;
+}
+.ghost {
+  opacity: .5;
+  background: #C8EBFB;
+}
+.list-group {
+  min-height: 20px;
+}
+.list-group-item {
+  cursor: move;
+}
+.list-group-item i{
+  cursor: pointer;
+}
+</style>
+{% endblock extra-css %}
+
+{% block left-sidebar %}{% endblock %}
+
+{% block main-content %}
+              
+       <div class="row" id="app">
+         
+           <div class="col-md-12">
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box">
+                           <h3>Grandprix leaderboard</h3>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="panel panel-default">
+                            <div class="row">
+                                        <div class="col-md-12 table-responsive">
+                                             <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr class="success">
+                                                        <th>Position</th>
+                                                        <th>Handle</th>
+                                                        <th>Score</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(player, idx) in leaderboard">
+                                                        <td><span v-text="idx + 1"></span></td>
+                                                        <td><span v-text="player.name"></span></td>
+                                                        <td><span v-text="player.score"></span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                       
+                       </div>
+                   </div>
+               </div>
+           </div>
+           
+</div>
+ <!-- PAGE CONTENT WRAPPER -->
+
+ 
+{% endblock main-content %}                             
+            
+      
+   
+	
+	{% block extra-js %}
+    <script type="text/javascript" src="{% static 'js/vue.js' %}"></script>
+    <script src="https://unpkg.com/vue-resource@1.3.1/dist/vue-resource.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/vee-validate/2.0.0-rc.3/vee-validate.min.js"></script>
+    <!-- CDNJS :: Sortable (https://cdnjs.com/) -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
+
+<!-- CDNJS :: Vue.Draggable (https://cdnjs.com/) -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.min.js"></script>
+    <script>
+        
+        $(function() {
+            $('#id_expiry').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true
+            });
+        })
+
+        Vue.http.options.emulateJSON = true;
+        Vue.use(VeeValidate);
+
+        var vm = new Vue({
+            el: "#app",
+            delimiters: ["[","]"],
+            data: {
+                PENDING: 0,
+                STARTED: 1,
+                COMPLETED: 2,
+                newMember: '',
+                club: '',
+                members: [],
+                boardorder: [],
+                matches: [],
+                profile: {},
+                leaderboard: [],
+                accounts: [],
+                transactions: [],
+                game: {
+                    white: '',
+                    black: ''
+                },
+                games: [],
+                payment: {
+                    recipient: '',
+                    amount: ''
+                },
+                stock: [],
+                upload: {
+                    generic_name: '',
+                    brand_name: '',
+                    strength: '',
+                    manufacturer: '',
+                    batch_number: '',
+                    expiry_date: '',
+                    quantity: '',
+                    pack_size: '',
+                    unit_cost: ''
+                },
+                search_term: '',
+                search_result: [],
+                search_detail: {},
+                show_save: false,
+                saved_drugs: [],
+                qty_item: {},
+                qty_value: 0,
+                uploading: false
+            },
+            mounted: function() {
+                console.log('vue initialized');
+                this.getProfile();
+                setInterval(() => {
+                    this.refresh();
+                }, 3600000)
+                //this.getStock();
+                //this.getSavedDrugs();
+            },
+            methods: {
+                refresh() {
+                    let url = '/club/leaderboard/';
+                    this.$http.get(url).then((response) => {
+                        this.leaderboard = response.body.leaderboard;
+                    })
+                },
+                ended() {
+                    console.log(this.members.map((item) => item.handle));
+                },
+                getProfile() {
+                    let url = '/club/info/';
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        this.club = response.body.club;
+                        this.members = response.body.members;
+                        this.matches = response.body.matches;
+                        this.leaderboard = response.body.leaderboard;
+                    });
+                },
+                addMember() {
+                    console.log(this.newMember);
+                    let url = '/club/add_member/';
+                    this.$http.post(url, {handle: this.newMember}).then((response) =>{
+                        console.log(response.body);
+                        this.members = response.body.members;
+                        this.newMember = '';
+                        alertify.success('Added successfully');
+                    }, err => {
+                        alertify.error(err.body.error);
+                        console.error(err);
+                    })
+                },
+                removeMember(member) {
+                    console.log(member);
+                    let url = '/club/remove_member/' + member.id + '/';
+                    this.$http.post(url).then((response) => {
+                        console.log(response.body);
+                        this.members = response.body.members;
+                        alertify.success('Removed ' + member.handle + ' successfully');
+                    }, err => {
+                        alertify.error(err.body.error);
+                    })
+                },
+                saveOrder(){
+                    console.log(this.members);
+                    let order = this.members.map((item) => item.handle).join('|');
+                    let url = '/club/save_order/?order=' + order;
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        alertify.success('Order saved successfully');
+                    }, err => {
+                        alertify.error(err.body.error);
+                    })
+                },
+                cancelMatch(match) {
+                    console.log(match);
+                    let url = '/club/cancel_match/' + match.id + '/';
+                    console.log(url);
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        this.members = response.body.members;
+                        this.matches = response.body.matches;
+                        alertify.success('Match cancelled successfully');
+                    }, err => {
+                        alertify.error(err.body.error);
+                    })
+                },
+                startMatch(match) {
+                    console.log(match);
+                    let url = '/club/start_match/' + match.id + '/';
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        this.members = response.body.members;
+                        this.matches = response.body.matches;
+                        alertify.success('Match started');
+                    }, err => {
+                        alertify.error(err.body.error);
+                    })
+                },
+                completeMatch(match) {
+                    console.log(match);
+                    let url = '/club/complete_match/' + match.id + '/';
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        this.members = response.body.members;
+                        this.matches = response.body.matches;
+                        alertify.success('Match completed!');
+                    }, err => {
+                        alertify.error(err.body.error);
+                    })
+                },
+                saveGame() {
+                    console.log(this.game);
+                    if (!this.game.white) {
+                        alertify.error('Please enter the lichess name of the white player');
+                        return;
+                    }
+                    if (!this.game.black) {
+                        alertify.error('Please enter the lichess name of the black player');
+                        return;
+                    }
+                    let url = '/account/save_game/';
+                    this.$http.post(url, this.game).then((response) => {
+                        console.log(response.body);
+                        alertify.success('successfully sent');
+                        this.games = response.body.games;
+                    })
+                },
+                getResult(gm) {
+                    console.log(gm);
+                    let url = '/account/get_result/' + gm.id + '/';
+                    this.$http.get(url).then((response) => {
+                        console.log(response.body);
+                        let game = this.games.filter((item) => item.id == gm.id);
+                    })
+                }
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+      $('.modal_trigger').click(function(e){
+          e.preventDefault();
+          //var id = $(this).attr('id').substr(7);
+          var url = $(this).attr('data-item');
+          //console.log('modal ' + $(this).attr('id').substr(7));
+          $('#close_action').attr('href', url);
+          $('#modal_basic').modal();
+      });
+    </script>
+	   
+	{% endblock extra-js %}

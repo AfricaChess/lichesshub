@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.contrib.auth.views import login, logout_then_login
 from django.views.generic.base import TemplateView
 from core.views import forgot, change_pwd, register
-from club.views import profile
+from club.views import profile, grandprix
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^accounts/register/$', register, name='register'),
     url(r'^accounts/logout/$', logout_then_login, name='logout'),
     url(r'^$', profile, name='home'),
+    url(r'^grandprix/$', grandprix, name='grandprix'),
     url(r'^accounts/sent/$', TemplateView.as_view(template_name='core/email_sent.html'), name='email_sent'),
     url(r'^accounts/notsent/$', TemplateView.as_view(template_name='core/not_sent.html'), name='not_sent'),
     url(r'^accounts/pwdset/$', TemplateView.as_view(template_name='core/pwd_set.html'), name='pwd_set'),

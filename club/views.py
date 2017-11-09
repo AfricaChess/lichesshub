@@ -20,6 +20,10 @@ def json_bad_request(error):
     return HttpResponseBadRequest(json.dumps(out))
 
 
+def grandprix(request):
+    return render(request, 'club/grandprix.html', {})
+
+
 @login_required
 def profile(request):
     clubs = Club.objects.filter(captain=request.user)
