@@ -21,7 +21,15 @@ def json_bad_request(error):
 
 
 def grandprix(request):
-    return render(request, 'club/grandprix.html', {})
+    leaderboard = [
+        {
+            'score': i['score'],
+            'name': i['name'],
+            'position': idx + 1
+        }
+        for idx, i in enumerate(get_leaderboard())]
+    #import pdb;pdb.set_trace()
+    return render(request, 'club/grandprix.html', {'leaderboard': leaderboard})
 
 
 @login_required
