@@ -55,7 +55,7 @@
                        <div class="panel panel-default tabs">
                            <ul class="nav nav-tabs" role="tablist">
                                <li class="active"><a href="#tab-first" role="tab" data-toggle="tab"><i class="fa fa-hourglass"></i> Match</a></li>
-                               <li><a href="#tab-second" role="tab" data-toggle="tab"><i class="fa fa-trophy"></i> Grand Prix</a></li>
+                               <li><a href="#tab-second" role="tab" data-toggle="tab"><i class="fa fa-trophy"></i> Leaderboard</a></li>
                                <li><a href="#tab-fourth" role="tab" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> Pay for Lessons</a></li>
                            </ul>
                            <div class="panel-body tab-content">
@@ -141,6 +141,15 @@
 
                                </div>
                                 <div class="tab-pane" id="tab-second">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                         <select v-model="tournament_type" class="form-control" @change="updateTournament()">
+                                            <option value="" disabled>Tournament Type</option>
+                                            <option v-for="ttype in tournament_types" :value="ttype.id">[ttype.name]</option>
+                                        </select>
+                                        </div>
+                                        <div class="col-md-6 text-success" v-if="updating"><h4>Please wait...</h4></div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-12 table-responsive">
                                              <table class="table table-bordered table-hover">
@@ -275,6 +284,8 @@
                 matches: [],
                 profile: {},
                 leaderboard: [],
+                tournament_types: [],
+                tournament_type: '',
                 accounts: [],
                 transactions: [],
                 game: {
@@ -305,7 +316,8 @@
                 saved_drugs: [],
                 qty_item: {},
                 qty_value: 0,
-                uploading: false
+                uploading: false,
+                updating: false
             },
             mounted: function() {
                 console.log('vue initialized');
@@ -326,6 +338,16 @@
                 ended() {
                     console.log(this.members.map((item) => item.handle));
                 },
+                updateTournament() {
+                    console.log(this.tournament_type);
+                    this.updating = true;
+                    let url = '/club/leaderboard/' + this.tournament_type + '/';
+                    console.log(url);
+                    this.$http.get(url).then((response) => {
+                        this.leaderboard = response.body.leaderboard;
+                    });
+                    this.updating = false;
+                },
                 getProfile() {
                     let url = '/club/info/';
                     this.$http.get(url).then((response) => {
@@ -334,6 +356,7 @@
                         this.members = response.body.members;
                         this.matches = response.body.matches;
                         this.leaderboard = response.body.leaderboard;
+                        this.tournament_types = response.body.tournament_types;
                     });
                 },
                 addMember() {

@@ -18,11 +18,41 @@ POINTS_MAP = {
 }
 
 
+class TournamentType(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Season(models.Model):
+    name = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def __unicode__(self):
+        return self.name
+
+
+class Points(models.Model):
+    placement = models.PositiveIntegerField()
+    points = models.PositiveIntegerField()
+    tournament_type = models.ForeignKey(TournamentType)
+
+    def __unicode__(self):
+        return '{}'.format(self.placement)
+
+    class Meta:
+        verbose_name_plural = 'Points'
+
+
 class Tournament(models.Model):
     name = models.CharField(max_length=50)
     date = models.DateTimeField(default=timezone.now)
     synced = models.BooleanField(default=False)
     error = models.BooleanField(default=False)
+    kind = models.ForeignKey(TournamentType, null=True)
+    season = models.ForeignKey(Season, null=True)
 
     def __unicode__(self):
         return self.name
@@ -30,6 +60,7 @@ class Tournament(models.Model):
 
 class Player(models.Model):
     name = models.CharField(max_length=100)
+    tournament_type = models.ForeignKey(TournamentType, null=True)
     # score = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):

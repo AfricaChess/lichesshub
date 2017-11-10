@@ -5,7 +5,7 @@ import time
 from django.core.management.base import BaseCommand
 # from django.conf import settings
 
-from grandprix.models import Tournament, Player, PlayerScore, POINTS_MAP
+from grandprix.models import Tournament, Player, PlayerScore, Points
 
 
 class Command(BaseCommand):
@@ -14,6 +14,8 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         tourneys = Tournament.objects.filter(synced=False, error=False)
         for tourney in tourneys:
+            points = Points.objects.filter(tournament_type=tourney.kind)
+
             time.sleep(2)
             url = 'https://lichess.org/api/tournament/{}'.format(tourney.name)
             self.stdout.write(url)
@@ -25,14 +27,20 @@ class Command(BaseCommand):
                 top_ten = {i['rank']: i['name'] for i in content}
                 self.stdout.write(str(top_ten))
                 for item in content:
-                    if item['rank'] in POINTS_MAP:
+                    try:
+                        pts = points.get(placement=item['rank'])
+                    except Points.DoesNotExist:
+                        continue
+                    else:
                         player, _ = Player.objects.get_or_create(
-                            name=item['name'])
+                            name=item['name'],
+                            tournament_type=tourney.kind)
                         PlayerScore.objects.create(
                             player=player,
                             tournament=tourney,
                             rank=item['rank'],
-                            points=POINTS_MAP[item['rank']])
+                            points=pts.points)
+
                 tourney.synced = True
                 tourney.save()
         self.stdout.write('done')

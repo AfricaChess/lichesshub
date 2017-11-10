@@ -11,7 +11,7 @@ from django.utils import timezone
 from club.models import Club, Member
 from club.forms import MemberForm
 from tournament.models import Match, Game
-from grandprix.models import Player
+from grandprix.models import Player, TournamentType
 
 
 def json_bad_request(error):
@@ -21,13 +21,18 @@ def json_bad_request(error):
 
 
 def grandprix(request):
-    leaderboard = [
-        {
-            'score': i['score'],
-            'name': i['name'],
-            'position': idx + 1
-        }
-        for idx, i in enumerate(get_leaderboard())]
+    try:
+        ttype = TournamentType.objects.get(name='Grand Prix')
+    except TournamentType.DoesNotExist:
+        leaderboard = []
+    else:
+        leaderboard = [
+            {
+                'score': i['score'],
+                'name': i['name'],
+                'position': idx + 1
+            }
+            for idx, i in enumerate(get_leaderboard(ttype))]
     #import pdb;pdb.set_trace()
     return render(request, 'club/grandprix.html', {'leaderboard': leaderboard})
 
@@ -100,20 +105,21 @@ def get_matches(clb):
     return out
 
 
-def get_leaderboard():
+def get_leaderboard(ttype):
     players = [
         {
             'name': player.name,
             'score': player.score
-        } for player in Player.objects.all()
+        } for player in Player.objects.filter(tournament_type=ttype)
     ]
     players.sort(key=lambda x: x['score'], reverse=True)
     return players
 
 
 @login_required
-def leaderboard(request):
-    return JsonResponse({'leaderboard': get_leaderboard()})
+def leaderboard(request, id):
+    ttype = TournamentType.objects.get(pk=id)
+    return JsonResponse({'leaderboard': get_leaderboard(ttype)})
 
 
 @login_required
@@ -121,13 +127,23 @@ def info(request):
     clb = Club.objects.get(captain=request.user)
     members = get_members(clb)
     matches = get_matches(clb)
-    leaderboard = get_leaderboard()
+    ttypes = TournamentType.objects.all()
+    if ttypes:
+        leaderboard = get_leaderboard(ttypes[0])
+    else:
+        leaderboard = []
+    tournament_types = [
+        {
+            'id': tt.id,
+            'name': tt.name
+        } for tt in ttypes]
     return JsonResponse(
         {
             'members': members,
             'club': clb.name,
             'matches': matches,
-            'leaderboard': leaderboard
+            'leaderboard': leaderboard,
+            'tournament_types': tournament_types
         })
 
 

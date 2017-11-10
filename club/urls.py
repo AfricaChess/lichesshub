@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'cancel_match/(?P<id>\d+)/$', views.cancel_match),
     url(r'start_match/(?P<id>\d+)/$', views.start_match),
     url(r'complete_match/(?P<id>\d+)/$', views.complete_match),
-    url(r'leaderboard/$', views.leaderboard),
+    url(r'leaderboard/(?P<id>\d+)/$', views.leaderboard),
+    #url(r'leaderboard/$', views.leaderboard),
 ]
