@@ -50,6 +50,7 @@ class Tournament(models.Model):
     kind = models.ForeignKey(TournamentType, null=True)
     season = models.ForeignKey(Season, null=True)
     active = models.BooleanField(default=True)
+    started = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
