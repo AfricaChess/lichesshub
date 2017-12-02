@@ -1,10 +1,31 @@
 from django.contrib import admin
 
-from tournament.models import Tournament, TournamentRound, Match, Game
+from tournament.models import TournamentType, Season, Points, Tournament,\
+    TournamentRound, Match, Game
 
 
 class RoundInline(admin.StackedInline):
     model = TournamentRound
+
+
+class PointInline(admin.TabularInline):
+    model = Points
+
+
+@admin.register(TournamentType)
+class TournamentTypeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'pairing_type']
+    inlines = [PointInline]
+
+
+@admin.register(Points)
+class PointAdmin(admin.ModelAdmin):
+    list_display = ['placement', 'points', 'tournament_type']
+
+
+@admin.register(Season)
+class SeasonAdmin(admin.ModelAdmin):
+    list_display = ['name', 'start_date', 'end_date']
 
 
 @admin.register(Tournament)
