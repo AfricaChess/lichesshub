@@ -19,7 +19,13 @@ POINTS_MAP = {
 
 
 class TournamentType(models.Model):
+    AUTO = 0
+    MANUAL = 1
+    ROUND_ROBIN = 2
+    SWISS = 3
+    PAIRINGS = enumerate(('Auto', 'Manual', 'Round Robin', 'Swiss'))
     name = models.CharField(max_length=50)
+    pairing_type = models.PositiveIntegerField(choices=PAIRINGS, default=AUTO)
 
     def __unicode__(self):
         return self.name
@@ -80,3 +86,11 @@ class PlayerScore(models.Model):
 
     def __unicode__(self):
         return unicode(self.player)
+
+
+#class Participant(models.Model):
+#    tournament = models.ForeignKey(Tournament)
+#    player = models.ForeignKey(Player)
+#
+#    def __unicode__(self):
+#        return unicode(self.player)

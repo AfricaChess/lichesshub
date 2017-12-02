@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.aggregates import Sum
 
 from club.models import Club, Member
+from player.models import Player
 
 
 class Tournament(models.Model):
@@ -52,9 +53,11 @@ class Match(models.Model):
 
 
 class Game(models.Model):
-    match = models.ForeignKey(Match)
-    white = models.ForeignKey(Member, related_name='game_white')
-    black = models.ForeignKey(Member, related_name='game_black')
+    match = models.ForeignKey(Match, null=True, blank=True)
+    tourney_round = models.ForeignKey(TournamentRound, null=True, blank=True)
+    game_id = models.CharField(max_length=50, null=True, blank=True)
+    white = models.ForeignKey(Player, related_name='game_white')
+    black = models.ForeignKey(Player, related_name='game_black')
     white_score = models.PositiveIntegerField(default=0)
     black_score = models.PositiveIntegerField(default=0)
     comment = models.TextField(blank=True)

@@ -5,14 +5,16 @@ import time
 from django.core.management.base import BaseCommand
 # from django.conf import settings
 
-from grandprix.models import Tournament, Player, PlayerScore, Points
+from grandprix.models import Tournament, TournamentType, Player, PlayerScore,\
+    Points
 
 
 class Command(BaseCommand):
     help = 'Get tournament result and save for each player'
 
     def handle(self, *args, **kwargs):
-        tourneys = Tournament.objects.filter(synced=False, error=False)
+        tourneys = Tournament.objects.filter(
+            synced=False, error=False, kind__pairing_type=TournamentType.AUTO)
         for tourney in tourneys:
             points = Points.objects.filter(tournament_type=tourney.kind)
 

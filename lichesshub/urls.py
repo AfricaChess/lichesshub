@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^accounts/pwdset/$', TemplateView.as_view(template_name='core/pwd_set.html'), name='pwd_set'),
     url(r'^accounts/change_pwd/(?P<id>\d+)/$', change_pwd, name='change_pwd'),
     url(r'^account/', include('account.urls')),
+    url(r'^tournament/', include('tournament.urls')),
     url(r'^club/', include('club.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
