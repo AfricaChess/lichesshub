@@ -1,0 +1,94 @@
+{% extends 'tournament/base.html' %}
+{% load static from staticfiles %}
+
+{% block page-header %}Africa LiChess Hub{% endblock page-header %}
+
+{% block extra-css %}
+<style>
+.content-wrapper, .main-footer {
+  margin-left: 0;
+}
+
+.flip-list-move {
+  transition: transform 0.5s;
+}
+.no-move {
+  transition: transform 0s;
+}
+.ghost {
+  opacity: .5;
+  background: #C8EBFB;
+}
+.list-group {
+  min-height: 20px;
+}
+.list-group-item {
+  cursor: move;
+}
+.list-group-item i{
+  cursor: pointer;
+}
+</style>
+{% endblock extra-css %}
+
+{% block left-sidebar %}{% endblock %}
+
+{% block main-content %}
+              
+       <div class="row" id="app">
+         
+           <div class="col-md-12">
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box">
+                           <h3>Tournaments</h3>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="panel panel-default">
+                            <div class="row">
+                                        <div class="col-md-12 table-responsive">
+                                             <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr class="success">
+                                                        <th>Name</th>
+                                                        <th>Kind</th>
+                                                        <th>Pairing Style</th>
+                                                        <th>Season</th>
+                                                        <th>register</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for tourney in tourneys %}
+                                                      <tr>
+                                                      <td>{{tourney.name}}</td>
+                                                      <td>{{tourney.kind.name}}</td>
+                                                      <td>{{tourney.kind.get_pairing_type_display}}</td>
+                                                      <td>{{tourney.season.name}}</td>
+                                                      <td><a href="{% url 'tournament_register' tourney.id %}" class="btn btn-primary">register</a></td>
+                                                      </tr>
+                                                    {% endfor %}
+                                                   
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                       
+                       </div>
+                   </div>
+               </div>
+           </div>
+           
+</div>
+ <!-- PAGE CONTENT WRAPPER -->
+
+ 
+{% endblock main-content %}                             
+            
+      
+   
+	
+	{% block extra-js %}
+	   
+	{% endblock extra-js %}

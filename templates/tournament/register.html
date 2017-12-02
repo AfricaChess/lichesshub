@@ -1,0 +1,136 @@
+{% extends 'tournament/base.html' %}
+{% load static from staticfiles %}
+
+{% block page-header %}Africa LiChess Hub{% endblock page-header %}
+
+{% block extra-css %}
+<style>
+.content-wrapper, .main-footer {
+  margin-left: 0;
+}
+
+.flip-list-move {
+  transition: transform 0.5s;
+}
+.no-move {
+  transition: transform 0s;
+}
+.ghost {
+  opacity: .5;
+  background: #C8EBFB;
+}
+.list-group {
+  min-height: 20px;
+}
+.list-group-item {
+  cursor: move;
+}
+.list-group-item i{
+  cursor: pointer;
+}
+</style>
+{% endblock extra-css %}
+
+{% block left-sidebar %}{% endblock %}
+
+{% block main-content %}
+              
+       <div class="row" id="app">
+         
+           <div class="col-md-12">
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box">
+                           <h3>{{tourney.name}}</h3>
+                           <p>{{participants|length}} players participating</p>
+                           <div class="row">
+                           <div class="col-md-6">
+                               <form action="" method="post">{% csrf_token %}
+                                   <div class="form-group has-feedback col-md-9">
+                                       {% if form.handle.errors %}
+                                         <div class="alert alert-danger">
+                                             {{form.handle.errors}}
+                                         </div>
+                                       {% endif %}
+                                       {{form.handle}}
+                                       <small>Please enter your lichess handle to register for this tournament, if your handle is not in either of the lists below</small>
+                                   </div>
+                                   <div class="col-md-3">
+                                    <button type="submit" class="btn btn-block btn-primary"><i class="fa fa-plus"></i> Register</button>
+                                   </div>
+                               </form>
+                           </div>
+                           <div class="col-md-6"></div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="panel panel-default">
+                           <div class="row">
+                           </div>
+                            <div class="row">
+                                <div class="col-md-6 table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>Not Playing</th>
+                                                <th>Rating</th>
+                                                <th>join</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for player in non_participants %}
+                                                <tr>
+                                                <td>{{player.handle}}</td>
+                                                <td>{{player.blitz_rating}}</td>
+                                                <td><a href="{% url 'tournament_join' tournament_id=tourney.id player_id=player.id %}" class="btn btn-primary"><i class="fa fa-plus"></i> join</a></td>
+                                                </tr>
+                                            {% endfor %}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                 <div class="col-md-6 table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>Playing</th>
+                                                <th>Rating</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for player in participants %}
+                                                <tr>
+                                                <td>{{player.handle}}</td>
+                                                <td>{{player.blitz_rating}}</td>
+                                                </tr>
+                                            {% empty %}
+                                            <tr><td colspan="2">Nobody is registered yet</td></tr>
+                                            {% endfor %}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           
+</div>
+ <!-- PAGE CONTENT WRAPPER -->
+
+ 
+{% endblock main-content %}                             
+            
+      
+   
+	
+	{% block extra-js %}
+	   <script>
+  $('#id_handle').attr('placeholder', 'Please enter your correct lichess handle to join this tournament');
+  $('#id_handle').addClass('form-control');
+
+  </script>
+	{% endblock extra-js %}

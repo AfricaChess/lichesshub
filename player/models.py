@@ -7,6 +7,7 @@ from django.db import models
 class Player(models.Model):
     handle = models.CharField(max_length=200, unique=True)
     blitz_rating = models.CharField(max_length=10, blank=True)
+    verified = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.handle

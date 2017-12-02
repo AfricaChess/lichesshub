@@ -111,3 +111,11 @@ class Game(models.Model):
     @property
     def score(self):
         return '{} - {}'.format(self.white_score, self.black_score)
+
+
+class Participant(models.Model):
+    player = models.ForeignKey(Player)
+    tournament = models.ForeignKey(Tournament)
+
+    def __unicode__(self):
+        return unicode(self.player)
