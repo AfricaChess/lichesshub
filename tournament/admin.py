@@ -31,7 +31,8 @@ class SeasonAdmin(admin.ModelAdmin):
 
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['name', 'date', 'kind', 'season', 'active',
+                    'synced', 'error']
     inlines = [RoundInline]
 
 
