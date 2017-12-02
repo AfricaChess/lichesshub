@@ -21,6 +21,7 @@ class TournamentTypeAdmin(admin.ModelAdmin):
 @admin.register(Points)
 class PointAdmin(admin.ModelAdmin):
     list_display = ['placement', 'points', 'tournament_type']
+    list_filter = ['tournament_type', ]
 
 
 @admin.register(Season)
@@ -53,4 +54,5 @@ class MatchAdmin(admin.ModelAdmin):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ['match', 'white', 'black', 'comment', 'score', 'synced', 'error']
+    list_display = ['match', 'white', 'black', 'comment',
+                    'score', 'synced', 'error']
