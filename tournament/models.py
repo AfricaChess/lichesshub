@@ -2,13 +2,53 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.db.models.aggregates import Sum
+from django.utils import timezone
 
-from club.models import Club, Member
+from club.models import Club
 from player.models import Player
 
 
-class Tournament(models.Model):
+class TournamentType(models.Model):
+    AUTO = 0
+    MANUAL = 1
+    ROUND_ROBIN = 2
+    SWISS = 3
+    PAIRINGS = enumerate(('Auto', 'Manual', 'Round Robin', 'Swiss'))
+    name = models.CharField(max_length=50)
+    pairing_type = models.PositiveIntegerField(choices=PAIRINGS, default=AUTO)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Season(models.Model):
     name = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def __unicode__(self):
+        return self.name
+
+
+class Points(models.Model):
+    placement = models.PositiveIntegerField()
+    points = models.PositiveIntegerField()
+    tournament_type = models.ForeignKey(TournamentType)
+
+    def __unicode__(self):
+        return '{}'.format(self.placement)
+
+    class Meta:
+        verbose_name_plural = 'Points'
+
+
+class Tournament(models.Model):
+    name = models.CharField(max_length=50)
+    date = models.DateTimeField(default=timezone.now)
+    synced = models.BooleanField(default=False)
+    error = models.BooleanField(default=False)
+    kind = models.ForeignKey(TournamentType, null=True)
+    season = models.ForeignKey(Season, null=True)
 
     def __unicode__(self):
         return self.name
