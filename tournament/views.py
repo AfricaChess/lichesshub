@@ -38,3 +38,8 @@ def join(request, tournament_id, player_id):
     player = get_object_or_404(Player, pk=player_id)
     Participant.objects.get_or_create(player=player, tournament=tourney)
     return redirect('tournament_register', id=tournament_id)
+
+
+def pairings(request, id):
+    tourney = get_object_or_404(Tournament, pk=id)
+    return render(request, 'tournament/pairings.html', {'tourney': tourney})

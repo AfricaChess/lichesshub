@@ -1,7 +1,9 @@
 from django.contrib import admin
 
+from pairing.utils import Pairing
+from player.models import Player
 from tournament.models import TournamentType, Season, Points, Tournament,\
-    TournamentRound, Match, Game
+    TournamentRound, Match, Game, Participant
 
 
 class RoundInline(admin.StackedInline):
@@ -29,6 +31,12 @@ class SeasonAdmin(admin.ModelAdmin):
     list_display = ['name', 'start_date', 'end_date']
 
 
+@admin.register(Participant)
+class ParticipantAdmin(admin.ModelAdmin):
+    list_display = ['player', 'tournament', 'score']
+    list_filter = ['tournament']
+
+
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
     list_display = ['name', 'date', 'kind', 'season', 'active',
@@ -44,6 +52,28 @@ class MatchInline(admin.TabularInline):
 class TournamentRoundAdmin(admin.ModelAdmin):
     list_display = ['tag', 'tournament']
     inlines = [MatchInline]
+    list_filter = ['tournament']
+    actions = ['run_pairing']
+
+    def run_pairing(self, request, queryset):
+        for tourney_round in queryset:
+            tourney = tourney_round.tournament
+            history = [(i.white.id, i.black.id) for i in Game.objects.filter(
+                tourney_round__tournament=tourney)]
+            participants = [
+                {'id': i.player.id, 'score': i.score}
+                for i in Participant.objects.filter(tournament=tourney)]
+            p = Pairing(participants, history=history)
+            #import pdb; pdb.set_trace()
+
+            for left, right in p.output:
+                white = Player.objects.get(pk=left)
+                black = Player.objects.get(pk=right)
+                Game.objects.create(
+                    tourney_round=tourney_round,
+                    white=white,
+                    black=black)
+    run_pairing.short_description = 'Run Pairings'
 
 
 @admin.register(Match)

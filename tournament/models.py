@@ -120,3 +120,15 @@ class Participant(models.Model):
 
     def __unicode__(self):
         return unicode(self.player)
+
+    @property
+    def score(self):
+        white_score = Game.objects.filter(
+            tourney_round__tournament=self.tournament,
+            white=self.player).aggregate(
+            Sum('white_score'))['white_score__sum'] or 0
+        black_score = Game.objects.filter(
+            tourney_round__tournament=self.tournament,
+            black=self.player).aggregate(
+            Sum('black_score'))['black_score__sum'] or 0
+        return white_score + black_score

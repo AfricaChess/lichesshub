@@ -41,24 +41,11 @@
                <div class="panel panel-success">
                    <div class="panel-heading">
                        <div class="panel-title-box">
-                           <h3>{{tourney.name}}</h3>
+                           <h3>{{tourney.name}} pairings</h3>
                            <p>{{participants|length}} player{{participants|pluralize}} participating</p>
                            <div class="row">
                            <div class="col-md-6">
-                               <form action="" method="post">{% csrf_token %}
-                                   <div class="form-group has-feedback col-md-9">
-                                       {% if form.handle.errors %}
-                                         <div class="alert alert-danger">
-                                             {{form.handle.errors}}
-                                         </div>
-                                       {% endif %}
-                                       {{form.handle}}
-                                       <small>Please enter your lichess handle to register for this tournament, if your handle is not in either of the lists below</small>
-                                   </div>
-                                   <div class="col-md-3">
-                                    <button type="submit" class="btn btn-block btn-primary"><i class="fa fa-plus"></i> Register</button>
-                                   </div>
-                               </form>
+                               
                            </div>
                            <div class="col-md-6"></div>
                            </div>

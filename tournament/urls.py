@@ -10,4 +10,5 @@ urlpatterns = [
         'join/(?P<tournament_id>\d+)/(?P<player_id>\d+)/$',
         views.join,
         name='tournament_join'),
+    url('pairings/(?P<id>\d+)/$', views.pairings, name='tournament_pairings'),
 ]

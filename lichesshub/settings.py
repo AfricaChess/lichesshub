@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'tournament.apps.TournamentConfig',
     'grandprix.apps.GrandprixConfig',
     'player.apps.PlayerConfig',
+    'pairing.apps.PairingConfig',
 ]
 
 MIDDLEWARE = [
