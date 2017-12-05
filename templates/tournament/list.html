@@ -73,7 +73,7 @@
                                                           <a class="btn btn-danger">closed</a>
                                                           {% endif %}
                                                       </td>
-                                                      <td><a href="" class="btn btn-success">pairings</a></td>
+                                                      <td><a href="{% url 'tournament_pairings' tourney.id %}" class="btn btn-success">pairings</a></td>
                                                       </tr>
                                                     {% endfor %}
                                                    

@@ -55,10 +55,22 @@ class Tournament(models.Model):
     def __unicode__(self):
         return self.name
 
+    @property
+    def current_round(self):
+        rnds = TournamentRound.objects.filter(tournament=self).order_by('tag')
+        unplayed = rnds.filter(completed=False)
+        if unplayed:
+            return unplayed[0]
+        else:
+            # Return last round anyway
+            last_index = rnds.count() - 1
+            return rnds[last_index]
+
 
 class TournamentRound(models.Model):
     tournament = models.ForeignKey(Tournament)
-    tag = models.CharField(max_length=100)
+    tag = models.PositiveIntegerField()
+    completed = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '{} ({})'.format(self.tournament.name, self.tag)
@@ -66,6 +78,9 @@ class TournamentRound(models.Model):
     @property
     def games(self):
         return Game.objects.filter(tourney_round=self).count()
+
+    class Meta:
+        unique_together = ('tournament', 'tag')
 
 
 class Match(models.Model):
@@ -116,6 +131,18 @@ class Game(models.Model):
     @property
     def score(self):
         return '{} - {}'.format(self.white_score, self.black_score)
+
+    @property
+    def white_standing(self):
+        participant = Participant.objects.get(
+            player=self.white, tournament=self.tourney_round.tournament)
+        return participant.score
+
+    @property
+    def black_standing(self):
+        participant = Participant.objects.get(
+            player=self.black, tournament=self.tourney_round.tournament)
+        return participant.score
 
 
 class Participant(models.Model):

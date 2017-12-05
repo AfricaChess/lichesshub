@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from tournament.models import Tournament, Participant
+from tournament.models import Tournament, Participant, Game
 from player.models import Player
 from tournament.forms import PlayerForm
 
@@ -42,4 +42,13 @@ def join(request, tournament_id, player_id):
 
 def pairings(request, id):
     tourney = get_object_or_404(Tournament, pk=id)
-    return render(request, 'tournament/pairings.html', {'tourney': tourney})
+    tourney_round = tourney.current_round
+    games = Game.objects.filter(tourney_round=tourney_round)
+    return render(
+        request,
+        'tournament/pairings.html',
+        {
+            'tourney': tourney,
+            'current_round': tourney_round,
+            'games': games
+        })

@@ -130,6 +130,7 @@ class TestHavePlayed(object):
 class TestSorting(object):
 
     def test_sort_by_score(self):
+        '''Test that players are sorted by score'''
         params = [
             {'id': 1, 'score': 0},
             {'id': 2, 'score': 2},
