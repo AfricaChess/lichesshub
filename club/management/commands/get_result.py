@@ -33,7 +33,7 @@ class Command(BaseCommand):
                         game.black_score = 2
                 game.synced = True
                 game.comment = '{} vs {}'.format(
-                    data['white']['userId'], data['black']['userId'])
+                    data['players']['white']['userId'], data['players']['black']['userId'])
                 game.save()
                 time.sleep(5)
             else:
