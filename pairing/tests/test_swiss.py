@@ -125,3 +125,18 @@ class TestHavePlayed(object):
         p = Pairing(params, history=history)
         assert p.output == [(1, 2), (3, 5), (4, 6), (7, 8)]
         assert p.remainder == {'id': 9, 'score': 0}
+
+
+class TestSorting(object):
+
+    def test_sort_by_score(self):
+        params = [
+            {'id': 1, 'score': 0},
+            {'id': 2, 'score': 2},
+            {'id': 3, 'score': 4},
+            {'id': 4, 'score': 1},
+            {'id': 5, 'score': 1},
+        ]
+        p = Pairing(params)
+        assert p.output == [(3, 2), (4, 5)]
+        assert p.remainder == {'id': 1, 'score': 0}

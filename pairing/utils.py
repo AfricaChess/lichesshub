@@ -3,12 +3,13 @@ from collections import defaultdict
 
 class Pairing(object):
     def __init__(self, players, history=None):
+
         self.players = [
             {
                 'id': i['id'],
                 'score': i['score'],
                 'paired': False
-            } for i in players]
+            } for i in sorted(players, key=lambda x: x['score'], reverse=True)]
         self.output = []
         self.remainder = []
 

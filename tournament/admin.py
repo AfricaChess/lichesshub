@@ -91,5 +91,6 @@ class MatchAdmin(admin.ModelAdmin):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ['match', 'white', 'black', 'comment',
+    list_display = ['tourney_round', 'white', 'black', 'comment',
                     'score', 'synced', 'error']
+    list_filter = ['tourney_round__tournament']
