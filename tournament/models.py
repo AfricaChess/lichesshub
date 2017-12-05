@@ -63,6 +63,10 @@ class TournamentRound(models.Model):
     def __unicode__(self):
         return '{} ({})'.format(self.tournament.name, self.tag)
 
+    @property
+    def games(self):
+        return Game.objects.filter(tourney_round=self).count()
+
 
 class Match(models.Model):
     PENDING = 0

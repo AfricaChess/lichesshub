@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib import messages
 
 from pairing.utils import Pairing
 from player.models import Player
@@ -50,29 +51,34 @@ class MatchInline(admin.TabularInline):
 
 @admin.register(TournamentRound)
 class TournamentRoundAdmin(admin.ModelAdmin):
-    list_display = ['tag', 'tournament']
+    list_display = ['tag', 'tournament', 'games']
     inlines = [MatchInline]
     list_filter = ['tournament']
     actions = ['run_pairing']
 
     def run_pairing(self, request, queryset):
-        for tourney_round in queryset:
-            tourney = tourney_round.tournament
-            history = [(i.white.id, i.black.id) for i in Game.objects.filter(
-                tourney_round__tournament=tourney)]
-            participants = [
-                {'id': i.player.id, 'score': i.score}
-                for i in Participant.objects.filter(tournament=tourney)]
-            p = Pairing(participants, history=history)
-            #import pdb; pdb.set_trace()
+        if queryset.count() > 1:
+            messages.error(request, 'Please start one round at a time')
+            return
+        # Check that the previous round games are completed already
+        tourney_round = queryset[0]
+        tourney = tourney_round.tournament
+        history = [(i.white.id, i.black.id) for i in Game.objects.filter(
+            tourney_round__tournament=tourney)]
+        participants = [
+            {'id': i.player.id, 'score': i.score}
+            for i in Participant.objects.filter(tournament=tourney)]
+        p = Pairing(participants, history=history)
+        #import pdb; pdb.set_trace()
 
-            for left, right in p.output:
-                white = Player.objects.get(pk=left)
-                black = Player.objects.get(pk=right)
-                Game.objects.create(
-                    tourney_round=tourney_round,
-                    white=white,
-                    black=black)
+        for left, right in p.output:
+            white = Player.objects.get(pk=left)
+            black = Player.objects.get(pk=right)
+            Game.objects.create(
+                tourney_round=tourney_round,
+                white=white,
+                black=black)
+        messages.info(request, 'Pairings completed')
     run_pairing.short_description = 'Run Pairings'
 
 
