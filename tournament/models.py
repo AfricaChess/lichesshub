@@ -71,6 +71,7 @@ class TournamentRound(models.Model):
     tournament = models.ForeignKey(Tournament)
     tag = models.PositiveIntegerField()
     completed = models.BooleanField(default=False)
+    paired = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '{} ({})'.format(self.tournament.name, self.tag)
@@ -118,7 +119,7 @@ class Game(models.Model):
     tourney_round = models.ForeignKey(TournamentRound, null=True, blank=True)
     game_id = models.CharField(max_length=50, null=True, blank=True)
     white = models.ForeignKey(Player, related_name='game_white')
-    black = models.ForeignKey(Player, related_name='game_black')
+    black = models.ForeignKey(Player, related_name='game_black', null=True)
     white_score = models.PositiveIntegerField(default=0)
     black_score = models.PositiveIntegerField(default=0)
     comment = models.TextField(blank=True)
@@ -140,6 +141,8 @@ class Game(models.Model):
 
     @property
     def black_standing(self):
+        if not self.black:
+            return 0
         participant = Participant.objects.get(
             player=self.black, tournament=self.tourney_round.tournament)
         return participant.score

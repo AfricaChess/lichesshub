@@ -1,3 +1,7 @@
-from django.test import TestCase
+import pytest
 
-# Create your tests here.
+
+def test_late_registration():
+    '''
+    If you register late you will be given a bye (1 pt for previous rounds)
+    '''

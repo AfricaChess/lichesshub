@@ -141,6 +141,7 @@ MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 LICHESS_API_URL = 'https://lichess.org/api/'
 
 BEST_SCORE_COUNT = 10
+BYE_SCORE = 1
 
 LOGGING = {
     'version': 1,

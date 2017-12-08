@@ -78,6 +78,9 @@ class TournamentRoundAdmin(admin.ModelAdmin):
                 tourney_round=tourney_round,
                 white=white,
                 black=black)
+
+        tourney_round.paired = True
+        tourney_round.save()
         messages.info(request, 'Pairings completed')
     run_pairing.short_description = 'Run Pairings'
 
