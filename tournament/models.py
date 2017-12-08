@@ -51,6 +51,7 @@ class Tournament(models.Model):
     season = models.ForeignKey(Season, null=True)
     active = models.BooleanField(default=True)
     started = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
@@ -65,6 +66,18 @@ class Tournament(models.Model):
             # Return last round anyway
             last_index = rnds.count() - 1
             return rnds[last_index]
+
+    def compute_scores(self):
+        participants = Participant.objects.filter(tournament=self)
+        scores = sorted(participants, key=lambda x: x.score, reverse=True)
+        points = Points.objects.filter(tournament_type=self.kind).order_by(
+            'placement')
+        counter = 1
+        for pt, participant in zip(points, scores):
+            participant.rank = counter,
+            participant.points = pt.points
+            participant.save()
+            counter += 1
 
 
 class TournamentRound(models.Model):
@@ -151,6 +164,8 @@ class Game(models.Model):
 class Participant(models.Model):
     player = models.ForeignKey(Player)
     tournament = models.ForeignKey(Tournament)
+    rank = models.PositiveIntegerField(default=0)
+    points = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
         return unicode(self.player)

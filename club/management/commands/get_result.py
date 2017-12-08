@@ -4,7 +4,7 @@ import time
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
-from tournament.models import Game, TournamentRound
+from tournament.models import Game, TournamentRound, Tournament
 
 
 class Command(BaseCommand):
@@ -33,7 +33,8 @@ class Command(BaseCommand):
                         game.black_score = 2
                 game.synced = True
                 game.comment = '{} vs {}'.format(
-                    data['players']['white']['userId'], data['players']['black']['userId'])
+                    data['players']['white']['userId'],
+                    data['players']['black']['userId'])
                 game.save()
                 time.sleep(5)
             else:
@@ -48,6 +49,11 @@ class Command(BaseCommand):
                 tourney_round.completed = True
                 tourney_round.save()
 
-            #import pdb;pdb.set_trace()
-            #results = resp.content['paginator']['currentPageResults']
-            self.stdout.write('done')
+        # Update the tournament
+        for tourney in Tournament.objects.filter(completed=False):
+            if not TournamentRound.objects.filter(
+                    tournament=tourney, completed=False).count():
+                tourney.completed = True
+                tourney.save()
+                tourney.compute_scores()
+        self.stdout.write('done')
