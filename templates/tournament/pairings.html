@@ -70,7 +70,7 @@
                                             {% for game in games %}
                                                 <tr>
                                                 <td>{{forloop.counter}}</td>
-                                                <td>{{game.white}} ({{game.white.blitz_rating}})</td>
+                                                <td>{{game.white|default:"Bye"}} ({{game.white.blitz_rating}})</td>
                                                 <td>{{game.white_standing}}</td>
                                                 <td>{{game.black_standing}}</td>
                                                 <td>{{game.black}} ({{game.black.blitz_rating}})</td>
