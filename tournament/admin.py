@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib import messages
+from django.conf import settings
 
 from pairing.utils import Pairing
 from player.models import Player
@@ -78,6 +79,15 @@ class TournamentRoundAdmin(admin.ModelAdmin):
                 tourney_round=tourney_round,
                 white=white,
                 black=black)
+        if p.remainder:
+            white = Player.objects.get(pk=p.remainder['id'])
+            Game.objects.create(
+                tourney_round=tourney_round,
+                white=white,
+                black=None,
+                white_score=settings.BYE_SCORE,
+                comment='Bye',
+                synced=True)
 
         tourney_round.paired = True
         tourney_round.save()
