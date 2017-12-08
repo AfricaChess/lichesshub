@@ -51,7 +51,7 @@ class MatchInline(admin.TabularInline):
 
 @admin.register(TournamentRound)
 class TournamentRoundAdmin(admin.ModelAdmin):
-    list_display = ['tag', 'tournament', 'games']
+    list_display = ['tag', 'tournament', 'games', 'paired']
     inlines = [MatchInline]
     list_filter = ['tournament']
     actions = ['run_pairing']
