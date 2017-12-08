@@ -4,11 +4,11 @@ import time
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
-from tournament.models import Game
+from tournament.models import Game, TournamentRound
 
 
 class Command(BaseCommand):
-    help = 'Get Result of game'
+    help = 'Get Result of game and update tourney rounds'
 
     def handle(self, *args, **kwargs):
         games = Game.objects.filter(
@@ -40,6 +40,13 @@ class Command(BaseCommand):
                 game.error = True
                 game.save()
                 time.sleep(65)
+
+        # Update tournament rounds
+        for tourney_round in TournamentRound.objects.filter(completed=False):
+            if not Game.objects.filter(
+                    tourney_round=tourney_round, synced=False).count():
+                tourney_round.completed = True
+                tourney_round.save()
 
             #import pdb;pdb.set_trace()
             #results = resp.content['paginator']['currentPageResults']
