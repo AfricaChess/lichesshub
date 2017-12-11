@@ -44,8 +44,10 @@ class Command(BaseCommand):
 
         # Update tournament rounds
         for tourney_round in TournamentRound.objects.filter(completed=False):
-            if not Game.objects.filter(
-                    tourney_round=tourney_round, synced=False).count():
+            games = Game.objects.filter(tourney_round=tourney_round)
+            played = games.filter(synced=True).count()
+            unplayed = games.filter(synced=False).count()
+            if played and not unplayed:
                 tourney_round.completed = True
                 tourney_round.save()
 
