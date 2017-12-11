@@ -13,13 +13,13 @@
 <div class="login-box">
   <div class="login-logo">
   
-  <span class="logo-lg">Blood Bank
+  <span class="logo-lg">Africa Chess
   </span>
     
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Join the Blood Bank network</p>
+    <p class="login-box-msg">Join the Africa liChess Network</p>
 
     <form action="" method="post">{% csrf_token %}
     {% if form.non_field_errors %}
@@ -66,33 +66,13 @@
        <hr />
 
         <div class="form-group has-feedback">
-        {% if form.name.errors %}
+        {% if form.handle.errors %}
             <div class="alert alert-danger">
-                {{ form.name.errors }}
+                {{ form.handle.errors }}
             </div>
         {% endif %}
-        {{ form.name }}
+        {{ form.handle }}
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-
-      <div class="form-group has-feedback">
-          {% if form.phone.errors %}
-            <div class="alert alert-danger">
-                {{ form.phone.errors }}
-            </div>
-        {% endif %}
-        {{ form.phone }}
-        <span class="glyphicon glyphicon-earphone form-control-feedback"></span>
-        
-      </div>
-
-       <div class="form-group has-feedback">
-        {% if form.address.errors %}
-            <div class="alert alert-danger">
-                {{ form.address.errors }}
-            </div>
-        {% endif %}
-        {{ form.address }}
       </div>
 
       <div class="row">
@@ -126,8 +106,8 @@
 
 {% block extra-js %}
 <script>
-    $('#id_name').attr('placeholder', 'Your Name');
-    $('#id_name').addClass('form-control');
+    $('#id_handle').attr('placeholder', 'Your Lichess Handle');
+    $('#id_handle').addClass('form-control');
 
     $('#id_email').attr('placeholder', 'Email (will be used to login)');
     $('#id_email').addClass('form-control');
@@ -137,14 +117,5 @@
     
     $('#id_pwd2').addClass('form-control');
     $('#id_pwd2').attr('placeholder', 'Verify Password');
-
-    $('#id_phone').attr('placeholder', 'Mobile');
-    $('#id_phone').addClass('form-control');
-
-    $('#id_address').attr('placeholder', 'Address');
-    $('#id_address').attr('rows', '4');
-    $('#id_address').addClass('form-control');
-    
-    $('#id_state').addClass('form-control');
   </script>
 {% endblock extra-js %}

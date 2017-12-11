@@ -1,35 +1,32 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 from tournament.models import Tournament, Participant, Game, TournamentRound
 from player.models import Player
-from tournament.forms import PlayerForm
+#from tournament.forms import PlayerForm
 
 
+@login_required
 def tournament_list(request):
     tourneys = Tournament.objects.filter(active=True)
     return render(request, 'tournament/list.html', {'tourneys': tourneys})
 
 
+@login_required
 def register(request, id):
     tourney = get_object_or_404(Tournament, pk=id)
     if request.method == 'POST':
-        form = PlayerForm(request.POST)
-        if form.is_valid():
-            player = form.cleaned_data['handle']
-            Participant.objects.get_or_create(player=player, tournament=tourney)
-    else:
-        form = PlayerForm()
+        player = Player.objects.get(user=request.user)
+        Participant.objects.get_or_create(player=player, tournament=tourney)
+
     parts = [i.player for i in Participant.objects.filter(tournament=tourney)]
-    non_parts = [i for i in Player.objects.order_by('handle') if i not in parts]
     return render(
         request,
         'tournament/register.html',
         {
             'tourney': tourney,
             'participants': parts,
-            'non_participants': non_parts,
-            'form': form
         }
     )
 

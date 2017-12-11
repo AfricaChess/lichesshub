@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from account.models import Account
+#from account.models import Account
+from player.models import Player
 
 
 class EmailForm(forms.Form):
@@ -34,12 +35,19 @@ class ChangePwdForm(forms.Form):
 
 
 class RegisterForm(forms.ModelForm):
+    email = forms.EmailField()
     pwd1 = forms.CharField(max_length=50, widget=forms.PasswordInput())
     pwd2 = forms.CharField(max_length=50, widget=forms.PasswordInput())
 
     class Meta:
-        model = Account
-        fields = ['name', 'email', 'phone']
+        model = Player
+        fields = ['handle']
+
+    def clean(self):
+        if 'pwd1' in self.cleaned_data and 'pwd2' in self.cleaned_data:
+            if self.cleaned_data['pwd1'] != self.cleaned_data['pwd2']:
+                raise forms.ValidationError('The passwords are not alike')
+            return self.cleaned_data
 
     def clean_email(self):
         if 'email' in self.cleaned_data:
@@ -49,4 +57,19 @@ class RegisterForm(forms.ModelForm):
             except User.DoesNotExist:
                 return email
             else:
-                raise forms.ValidationError('The email you are using is already taken')
+                raise forms.ValidationError(
+                    'The email you are using is already taken')
+
+    def clean_handle(self):
+        if 'handle' in self.cleaned_data:
+            handle = self.cleaned_data['handle']
+            try:
+                player = Player.objects.get(handle__iexact=handle)
+            except Player.DoesNotExist:
+                return handle
+            else:
+                if player.user:
+                    raise forms.ValidationError(
+                        'This handle is already registered')
+                else:
+                    return handle

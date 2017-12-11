@@ -46,17 +46,9 @@
                            <div class="row">
                            <div class="col-md-6">
                                <form action="" method="post">{% csrf_token %}
-                                   <div class="form-group has-feedback col-md-9">
-                                       {% if form.handle.errors %}
-                                         <div class="alert alert-danger">
-                                             {{form.handle.errors}}
-                                         </div>
-                                       {% endif %}
-                                       {{form.handle}}
-                                       <small>Please enter your lichess handle to register for this tournament, if your handle is not in either of the lists below</small>
-                                   </div>
-                                   <div class="col-md-3">
-                                    <button type="submit" class="btn btn-block btn-primary"><i class="fa fa-plus"></i> Register</button>
+                                  
+                                   <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-primary"><i class="fa fa-pencil-square-o"></i> Click to register for the tourney</button>
                                    </div>
                                </form>
                            </div>
@@ -69,41 +61,17 @@
                            <div class="row">
                            </div>
                             <div class="row">
-                                <div class="col-md-6 table-responsive">
+                                 <div class="col-md-12 table-responsive">
                                         <table class="table table-bordered table-hover">
                                         <thead>
                                             <tr class="success">
-                                                <th>Not Playing</th>
-                                                <th>Rating</th>
-                                                <th>join</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for player in non_participants %}
-                                                <tr>
-                                                <td>{{player.handle}}</td>
-                                                <td>{{player.blitz_rating}}</td>
-                                                <td><a href="{% url 'tournament_join' tournament_id=tourney.id player_id=player.id %}" class="btn btn-primary"><i class="fa fa-plus"></i> join</a></td>
-                                                </tr>
-                                            {% endfor %}
-                                            
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                 <div class="col-md-6 table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                        <thead>
-                                            <tr class="success">
-                                                <th>Playing</th>
-                                                <th>Rating</th>
+                                                <th>Players</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for player in participants %}
                                                 <tr>
-                                                <td>{{player.handle}}</td>
-                                                <td>{{player.blitz_rating}}</td>
+                                                <td>{{player.handle}} ({{player.blitz_rating}})</td>
                                                 </tr>
                                             {% empty %}
                                             <tr><td colspan="2">Nobody is registered yet</td></tr>

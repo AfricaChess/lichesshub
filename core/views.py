@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 
 from core.forms import EmailForm, ChangePwdForm, RegisterForm
+from player.models import Player
 
 
 @login_required
@@ -74,19 +75,20 @@ def register(request):
             #import pdb;pdb.set_trace()
             pwd = form.cleaned_data.pop('pwd1')
             email = form.cleaned_data['email']
+            handle = form.cleaned_data['handle']
             #referrer = form.cleaned_data['referrer']
             #pharmacy = form.save(commit=False)
-            account = form.save(commit=False)
             usr = User.objects.create_user(
                 username=email,
                 password=pwd,
-                first_name=form.cleaned_data['name'])
-            account.user = usr
-            account.balance = 5000
-            account.save()
+                first_name=handle)
+
+            player, _ = Player.objects.get_or_create(handle__iexact=handle)
+            player.user = usr
+            player.save()
 
             messages.success(
-                request, 'Welcome to the Blood bank!')
+                request, 'Welcome to the Africa Chess Network!')
             return redirect('login')
     else:
         form = RegisterForm()
