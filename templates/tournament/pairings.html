@@ -44,9 +44,11 @@
                            <h3>{{tourney.name}} Pairings</h3>
                            <p>Round {{current_round.tag}}</p>
                            <div class="row">
+                               {% if user.is_staff and not current_round.paired and not current_round.completed %}
+                            <div class="col-md-6"><a href="{% url 'run_pairings' id=current_round.id %}" class="btn btn-block btn-success"><i class="fa fa-eye"></i> Run Pairing</a></div>
                            <div class="col-md-6">
                            </div>
-                           <div class="col-md-6"></div>
+                           {% endif %}
                            </div>
                        </div>
                    </div>
@@ -69,7 +71,11 @@
                                         <tbody>
                                             {% for game in games %}
                                                 <tr>
-                                                <td>{{forloop.counter}}</td>
+                                                <td>{{forloop.counter}}
+                                                    {% if user.is_staff %}
+                                                    <a href="">scores</a>
+                                                    {% endif %}
+                                                </td>
                                                 <td>{{game.white|default:"Bye"}} ({{game.white.blitz_rating}})</td>
                                                 <td>{{game.white_standing}}</td>
                                                 <td>{{game.black_standing}}</td>

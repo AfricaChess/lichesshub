@@ -11,4 +11,6 @@ urlpatterns = [
         views.join,
         name='tournament_join'),
     url('pairings/(?P<id>\d+)/$', views.pairings, name='tournament_pairings'),
+    url('pair/(?P<id>\d+)/$', views.run_pairings, name='run_pairings'),
+    url('leaderboard/(?P<id>\d+)/$', views.leaderboard, name='leaderboard'),
 ]

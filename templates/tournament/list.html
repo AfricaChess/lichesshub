@@ -36,8 +36,39 @@
 {% block main-content %}
               
        <div class="row" id="app">
-         
-           <div class="col-md-12">
+           <div class="col-md-3">
+               <div class="panel panel-success">
+                   <div class="panel-heading">
+                       <div class="panel-title-box">
+                           <h3>Leaderboards</h3>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="panel panel-success">
+                           <div class="row">
+                               <div class="col-md-12 table-responsive">
+                                   <table class="table table-bordered table-hover">
+                                       <thead>
+                                           <tr class="success">
+                                               <th>Tournament Type</th>
+                                           </tr>
+                                       </thead>
+                                       <tbody>
+                                           {% for kind in tourney_types %}
+                                           <tr>
+                                               <td>
+                                                   <a href="{% url 'leaderboard' id=kind.id %}" class="success">{{kind.name}}</a></td>
+                                           </tr>
+                                           {% endfor %}
+                                       </tbody>
+                                   </table>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-9">
                <div class="panel panel-success">
                    <div class="panel-heading">
                        <div class="panel-title-box">

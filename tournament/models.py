@@ -140,7 +140,8 @@ class Game(models.Model):
     error = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return '{} vs {}'.format(self.white.handle, self.black.handle)
+        _black = self.black.handle if self.black else 'Bye'
+        return '{} vs {}'.format(self.white.handle, _black)
 
     @property
     def score(self):
