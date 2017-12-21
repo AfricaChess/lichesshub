@@ -14,7 +14,8 @@ from pairing.utils import Pairing
 
 @login_required
 def tournament_list(request):
-    tourneys = Tournament.objects.filter(active=True)
+    tourneys = Tournament.objects.filter(active=True).exclude(
+        kind__pairing_type=TournamentType.AUTO)
     return render(
         request,
         'tournament/list.html',
