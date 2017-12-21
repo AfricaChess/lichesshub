@@ -173,7 +173,7 @@ class Participant(models.Model):
 
     @property
     def score(self):
-        if self.tournament.kind == TournamentType.AUTO:
+        if self.tournament.kind.pairing_type == TournamentType.AUTO:
             return self.points
 
         white_score = Game.objects.filter(
