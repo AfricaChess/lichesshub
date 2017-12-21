@@ -173,6 +173,9 @@ class Participant(models.Model):
 
     @property
     def score(self):
+        if self.tournament.kind == TournamentType.AUTO:
+            return self.points
+
         white_score = Game.objects.filter(
             tourney_round__tournament=self.tournament,
             white=self.player).aggregate(
