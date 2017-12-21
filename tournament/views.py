@@ -113,7 +113,7 @@ def leaderboard(request, id):
 
     d = defaultdict(int)
     for participant in participants:
-        d[participant.player.handle] += participant.points
+        d[participant.player.handle] += participant.score
 
     out = [{'name': key, 'score': val} for key, val in d.items()]
     out.sort(key=lambda x: x['score'], reverse=True)
