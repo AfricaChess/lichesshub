@@ -109,15 +109,20 @@ def leaderboard(request, id):
     tourney_type = get_object_or_404(TournamentType, pk=id)
     now = timezone.now().date()
     season = Season.objects.filter(start_date__lte=now, end_date__gte=now)
-    participants = Participant.objects.filter(
+    _participants = Participant.objects.filter(
         tournament__kind=tourney_type, tournament__season=season)
+    participants = sorted(_participants, key=lambda x: x.score, reverse=True)
 
-    d = defaultdict(int)
+    d = defaultdict(list)
     for participant in participants:
         if participant.player.handle:
-            d[participant.player.handle] += participant.score
+            if len(d[participant.player.handle]) == 10:
+                continue
+            else:
+                d[participant.player.handle].append(participant.score)
 
-    out = [{'name': key, 'score': val} for key, val in d.items()]
+    out = [{'name': key, 'score': sum(val)} for key, val in d.items()]
+    #out = [{'name': key, 'score': val} for key, val in d.items()]
     out.sort(key=lambda x: x['score'], reverse=True)
     return render(
         request,
